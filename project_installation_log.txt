@@ -1,0 +1,74 @@
+===================================================================
+                ARLY PROJECT - SYSTEM INSTALLATION LOG
+===================================================================
+Location: C:\Users\user\OneDrive\Desktop\ARLY\
+Date: June 2026
+Framework Architecture: React 18 + TypeScript + Tailwind CSS v4
+
+This file logs all Terminal/Command Prompt setups executed 
+outside and inside the frontend workspace directory.
+
+-------------------------------------------------------------------
+[PHASE 1] FRONTEND SCAFFOLDING INITIALIZATION
+-------------------------------------------------------------------
+Executed in directory: C:\Users\user\OneDrive\Desktop\ARLY>
+Command run:
+  ➜ npm create vite@latest arly-frontend -- --template react-ts
+
+Result: 
+  Created a dedicated 'arly-frontend' sub-folder containing 
+  the Vite compiler configuration, source directories, and 
+  TypeScript dependencies (`package.json`, `tsconfig.json`).
+
+
+-------------------------------------------------------------------
+[PHASE 2] CORE DEPENDENCY DEPENDENCIES INSTALLATION
+-------------------------------------------------------------------
+Executed in directory: C:\Users\user\OneDrive\Desktop\ARLY\arly-frontend>
+Commands run:
+  ➜ cd arly-frontend
+  ➜ npm install
+
+Packages Downloaded & Audited:
+  * react (v18+)     - Main library for building dynamic UI interfaces.
+  * react-dom (v18+) - Connects the React component tree directly to the browser DOM.
+
+
+-------------------------------------------------------------------
+[PHASE 3] TAILWIND CSS V4 & COMPILER ENGINE SETUP
+-------------------------------------------------------------------
+Executed in directory: C:\Users\user\OneDrive\Desktop\ARLY\arly-frontend>
+Commands run:
+  ➜ npm install -D tailwindcss postcss autoprefixer
+  ➜ npm install -D @tailwindcss/postcss
+
+Packages Downloaded:
+  * tailwindcss          - The utility-first utility class framework.
+  * postcss              - Automated CSS pre-processor engine.
+  * autoprefixer         - Injects browser vendor prefixes (Safari, Chrome compatibility).
+  * @tailwindcss/postcss - **CRITICAL PATCH**: Explicit integration module required 
+                           specifically by Tailwind v4 compilation pipelines.
+
+
+-------------------------------------------------------------------
+[PHASE 4] MANUAL CONFIGURATION OVERRIDES
+-------------------------------------------------------------------
+Because Windows/PowerShell path rules prevented automated 'npx init' scripts,
+the following translation configurations were declared manually:
+
+1. File: arly-frontend/tailwind.config.js
+   - Explicitly mapped engine scanner parameters to read all template targets:
+     "./index.html", "./src/**/*.{js,ts,jsx,tsx}"
+
+2. File: arly-frontend/postcss.config.js
+   - Bound the core compiler layer to run the new Tailwind patch:
+     plugins: { '@tailwindcss/postcss': {}, autoprefixer: {} }
+
+3. File: arly-frontend/src/index.css
+   - Injected core directives to handle compilation styling layers:
+     @tailwind base; @tailwind components; @tailwind utilities;
+
+
+===================================================================
+STATUS: COMPILE VERIFIED SUCCESFULLY via 'npm run dev' (Local port 5173)
+===================================================================
