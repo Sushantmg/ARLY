@@ -2,8 +2,8 @@
                 ARLY PROJECT - SYSTEM INSTALLATION LOG
 ===================================================================
 Location: C:\Users\user\OneDrive\Desktop\ARLY\
-Date: June 2026
-Framework Architecture: React 18 + TypeScript + Tailwind CSS v4
+Date: July 2026
+Framework Architecture: React 18 + TypeScript + Tailwind CSS v4 + React Router v6
 
 This file logs all Terminal/Command Prompt setups executed 
 outside and inside the frontend workspace directory.
@@ -28,10 +28,13 @@ Executed in directory: C:\Users\user\OneDrive\Desktop\ARLY\arly-frontend>
 Commands run:
   ➜ cd arly-frontend
   ➜ npm install
+  ➜ npm install react-router-dom
 
 Packages Downloaded & Audited:
-  * react (v18+)     - Main library for building dynamic UI interfaces.
-  * react-dom (v18+) - Connects the React component tree directly to the browser DOM.
+  * react (v18+)         - Main library for building dynamic UI interfaces.
+  * react-dom (v18+)     - Connects the React component tree directly to the browser DOM.
+  * react-router-dom     - Handles application route mapping, dynamic parameters (?url=),
+                           and declarative link navigation without browser reloads.
 
 
 -------------------------------------------------------------------
@@ -51,7 +54,7 @@ Packages Downloaded:
 
 
 -------------------------------------------------------------------
-[PHASE 4] MANUAL CONFIGURATION OVERRIDES
+[PHASE 4] MANUAL CONFIGURATION & ARCHITECTURE OVERRIDES
 -------------------------------------------------------------------
 Because Windows/PowerShell path rules prevented automated 'npx init' scripts,
 the following translation configurations were declared manually:
@@ -65,10 +68,18 @@ the following translation configurations were declared manually:
      plugins: { '@tailwindcss/postcss': {}, autoprefixer: {} }
 
 3. File: arly-frontend/src/index.css
-   - Injected core directives to handle compilation styling layers:
-     @tailwind base; @tailwind components; @tailwind utilities;
+   - Refactored global layout layer: Removed duplicate `App.css` styling hooks, 
+     moved file inside the `src/` directory to resolve compiler path resolution errors, 
+     and declared the strict modern Tailwind v4 directive mapping:
+     @import "tailwindcss";
+
+4. File: arly-frontend/src/App.tsx & /src/pages
+   - Completely modularized the app structure by removing conditional view toggles 
+     and generating distinct multi-page view sheets (`Home.tsx`, `About.tsx`, `Result.tsx`) 
+     bound dynamically through a client-side layout router.
 
 
 ===================================================================
-STATUS: COMPILE VERIFIED SUCCESFULLY via 'npm run dev' (Local port 5173)
+STATUS: ROUTING AND COMPILATION VERIFIED SUCCESSFULLY
+        Running locally via 'npm run dev' on local port 5173 / 5174
 ===================================================================
