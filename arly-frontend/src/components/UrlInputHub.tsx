@@ -25,7 +25,7 @@ export default function UrlInputHub({ onUrlSubmit, isLoading }: UrlInputHubProps
       <h1 className="text-4xl font-black text-gray-900 tracking-tight mb-3">
         ARLY <span className="text-blue-600 font-medium text-3xl">Scraper Engine</span>
       </h1>
-      <p className="text-base text-gray-500 mb-8 max-w-lg mx-auto">
+      <p className="text-base text-gray-600 font-medium mb-8 max-w-lg mx-auto">
         Paste any e-commerce product link below to automatically extract live pricing, stock data, and specifications.
       </p>
 
