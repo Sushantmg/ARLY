@@ -1,5 +1,39 @@
 @import "tailwindcss";
+@tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   font-family: Inter, system-ui, sans-serif;
+}
+
+.notebook-bg {
+  position: relative;
+  background-color: #0a0a0a;
+  overflow: hidden;
+}
+
+.notebook-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -20;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.notebook-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -10;
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 40%,
+    transparent 0%,
+    rgba(10, 10, 10, 0.4) 55%,
+    rgba(10, 10, 10, 0.95) 100%
+  );
 }

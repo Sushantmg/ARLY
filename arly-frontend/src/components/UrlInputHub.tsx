@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import type { FormEvent } from 'react';
+
 interface UrlInputHubProps {
   onUrlSubmit: (url: string) => void;
   isLoading: boolean;
@@ -8,7 +10,7 @@ export default function UrlInputHub({ onUrlSubmit, isLoading }: UrlInputHubProps
   const [urlInput, setUrlInput] = useState<string>('');
   const [error, setError] = useState<string>('');
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (!urlInput.trim() || !urlInput.startsWith('http')) {

@@ -1,4 +1,3 @@
-
 import type { ProductData } from '../types/product';
 
 interface ProductCardProps {
