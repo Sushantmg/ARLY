@@ -41,7 +41,7 @@ export default function Navbar({ isDark, setIsDark }: NavbarProps) {
                 ARLY
               </h1>
               <p className="text-[11px] text-gray-500 dark:text-slate-400 -mt-1 tracking-widest uppercase">
-                AI Resume Analyzer
+                AI Product Finder
               </p>
             </div>
           </Link>
