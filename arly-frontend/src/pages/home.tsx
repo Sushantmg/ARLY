@@ -43,7 +43,7 @@ export default function Home({ isLoading, setIsLoading }: HomeProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#FBFAF6] relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#FBFAF6] dark:bg-[#0A0C10] relative overflow-x-hidden">
       {/* single ambient marigold glow, hero only — the page's one decorative risk */}
       <div
         aria-hidden

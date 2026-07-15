@@ -31,7 +31,7 @@ export default function ProsGrid() {
           Why it's worth using
         </span>
         <h2
-          className="text-3xl sm:text-4xl font-black text-[#16181F] mt-2"
+          className="text-3xl sm:text-4xl font-black text-[#16181F] dark:text-white mt-2"
           style={{ fontFamily: "'Fraunces', serif" }}
         >
           Built to actually save you money
@@ -50,13 +50,13 @@ export default function ProsGrid() {
             key={title}
             variants={item}
             whileHover={{ y: -3 }}
-            className="rounded-2xl border border-[#16181F]/8 bg-white/60 p-6 transition-shadow hover:shadow-[0_20px_40px_-24px_rgba(22,24,31,0.25)]"
+            className="rounded-2xl border border-[#16181F]/8 dark:border-white/10 bg-white/60 dark:bg-white/5 p-6 transition-shadow hover:shadow-[0_20px_40px_-24px_rgba(22,24,31,0.25)]"
           >
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#D98E1B]/10 text-[#D98E1B] mb-4">
               <Icon className="text-lg" />
             </div>
-            <h3 className="font-bold text-[#16181F] mb-1.5">{title}</h3>
-            <p className="text-sm text-[#5B6270] leading-relaxed">{detail}</p>
+            <h3 className="font-bold text-[#16181F] dark:text-white mb-1.5">{title}</h3>
+            <p className="text-sm text-[#5B6270] dark:text-white/60 leading-relaxed">{detail}</p>
           </motion.div>
         ))}
       </motion.div>

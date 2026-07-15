@@ -35,7 +35,7 @@ export default function ProblemSolution() {
           Why ARLY exists
         </span>
         <h2
-          className="text-3xl sm:text-4xl font-black text-[#16181F] mt-2"
+          className="text-3xl sm:text-4xl font-black text-[#16181F] dark:text-white mt-2"
           style={{ fontFamily: "'Fraunces', serif" }}
         >
           Comparing prices shouldn't be a part-time job
@@ -48,13 +48,13 @@ export default function ProblemSolution() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.4 }}
-          className="rounded-2xl bg-[#B23A48]/[0.04] border border-[#B23A48]/15 p-7"
+          className="rounded-2xl bg-[#B23A48]/[0.04] dark:bg-red-900/10 border border-[#B23A48]/15 dark:border-red-400/20 p-7"
         >
-          <h3 className="font-bold text-[#16181F] mb-4 text-lg">The tab-switching tax</h3>
+          <h3 className="font-bold text-[#16181F] dark:text-white mb-4 text-lg">The tab-switching tax</h3>
           <ul className="space-y-3">
             {problems.map((p) => (
-              <li key={p} className="flex gap-3 text-sm text-[#5B6270] leading-relaxed">
-                <FiXCircle className="mt-0.5 shrink-0 text-[#B23A48]" />
+              <li key={p} className="flex gap-3 text-sm text-[#5B6270] dark:text-white/60 leading-relaxed">
+                <FiXCircle className="mt-0.5 shrink-0 text-[#B23A48] dark:text-red-400" />
                 {p}
               </li>
             ))}
@@ -67,13 +67,13 @@ export default function ProblemSolution() {
           whileInView="visible"
           viewport={{ once: true, amount: 0.4 }}
           transition={{ delay: 0.1 }}
-          className="rounded-2xl bg-[#21365E]/[0.04] border border-[#21365E]/15 p-7"
+          className="rounded-2xl bg-[#21365E]/[0.04] dark:bg-blue-900/10 border border-[#21365E]/15 dark:border-blue-400/20 p-7"
         >
-          <h3 className="font-bold text-[#16181F] mb-4 text-lg">The ARLY fix</h3>
+          <h3 className="font-bold text-[#16181F] dark:text-white mb-4 text-lg">The ARLY fix</h3>
           <ul className="space-y-3">
             {fixes.map((f) => (
-              <li key={f} className="flex gap-3 text-sm text-[#5B6270] leading-relaxed">
-                <FiCheckCircle className="mt-0.5 shrink-0 text-[#21365E]" />
+              <li key={f} className="flex gap-3 text-sm text-[#5B6270] dark:text-white/60 leading-relaxed">
+                <FiCheckCircle className="mt-0.5 shrink-0 text-[#21365E] dark:text-blue-400" />
                 {f}
               </li>
             ))}

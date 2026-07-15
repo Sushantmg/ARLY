@@ -49,7 +49,7 @@ export default function PipelineFlow() {
           How it works
         </span>
         <h2
-          className="text-3xl sm:text-4xl font-black text-[#16181F] mt-2"
+          className="text-3xl sm:text-4xl font-black text-[#16181F] dark:text-white mt-2"
           style={{ fontFamily: "'Fraunces', serif" }}
         >
           Five steps, one link
@@ -77,7 +77,7 @@ export default function PipelineFlow() {
               viewport={{ once: true, amount: 0.4 }}
               className="relative flex flex-col items-start md:items-center md:text-center"
             >
-              <div className="relative z-10 flex items-center justify-center w-12 h-12 rounded-full bg-[#16181F] text-[#D98E1B] mb-4 shrink-0">
+              <div className="relative z-10 flex items-center justify-center w-12 h-12 rounded-full bg-[#16181F] dark:bg-[#D98E1B] text-[#D98E1B] dark:text-[#16181F] mb-4 shrink-0">
                 <Icon className="text-lg" />
                 <span
                   className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[#D98E1B] text-[#16181F] text-[10px] font-bold flex items-center justify-center"
@@ -86,8 +86,8 @@ export default function PipelineFlow() {
                   {i + 1}
                 </span>
               </div>
-              <h3 className="font-bold text-[#16181F] mb-1.5">{title}</h3>
-              <p className="text-sm text-[#5B6270] leading-relaxed">{detail}</p>
+              <h3 className="font-bold text-[#16181F] dark:text-white mb-1.5">{title}</h3>
+              <p className="text-sm text-[#5B6270] dark:text-white/60 leading-relaxed">{detail}</p>
             </motion.div>
           ))}
         </div>

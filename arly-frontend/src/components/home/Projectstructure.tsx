@@ -56,7 +56,7 @@ export default function ProjectStructure() {
           Under the hood
         </span>
         <h2
-          className="text-3xl sm:text-4xl font-black text-[#16181F] mt-2"
+          className="text-3xl sm:text-4xl font-black text-[#16181F] dark:text-white mt-2"
           style={{ fontFamily: "'Fraunces', serif" }}
         >
           Project structure
@@ -69,16 +69,16 @@ export default function ProjectStructure() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
-          className="rounded-2xl border border-[#16181F]/8 bg-white/60 p-6 sm:p-7 flex flex-col justify-center gap-1"
+          className="rounded-2xl border border-[#16181F]/8 dark:border-white/10 bg-white/60 dark:bg-white/5 p-6 sm:p-7 flex flex-col justify-center gap-1"
         >
           {layers.map(({ icon: Icon, name, detail }, i) => (
             <motion.div key={name} variants={item} className="flex items-center gap-4 py-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#21365E]/8 text-[#21365E] shrink-0">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#21365E]/8 dark:bg-blue-900/20 text-[#21365E] dark:text-blue-300 shrink-0">
                 <Icon />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-bold text-[#16181F] text-sm">{name}</p>
-                <p className="text-xs text-[#5B6270]">{detail}</p>
+                <p className="font-bold text-[#16181F] dark:text-white text-sm">{name}</p>
+                <p className="text-xs text-[#5B6270] dark:text-white/60">{detail}</p>
               </div>
               {i < layers.length - 1 && (
                 <FiArrowRight className="hidden sm:block text-[#5B6270]/30 shrink-0" />
@@ -92,7 +92,7 @@ export default function ProjectStructure() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl bg-[#16181F] p-6 sm:p-7 overflow-x-auto"
+          className="rounded-2xl bg-[#16181F] dark:bg-[#1a1c28] p-6 sm:p-7 overflow-x-auto"
         >
           <pre
             className="text-[#F5F3EE] text-xs leading-relaxed whitespace-pre"

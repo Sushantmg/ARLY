@@ -31,16 +31,16 @@ export default function StatsStrip() {
         <motion.div
           key={label}
           variants={item}
-          className="rounded-2xl border border-[#16181F]/8 bg-white/60 px-5 py-6 text-center"
+          className="rounded-2xl border border-[#16181F]/8 dark:border-white/10 bg-white/60 dark:bg-white/5 px-5 py-6 text-center"
         >
           <Icon className="mx-auto mb-3 text-xl text-[#D98E1B]" />
           <div
-            className="text-3xl font-black text-[#16181F] mb-1"
+            className="text-3xl font-black text-[#16181F] dark:text-white mb-1"
             style={{ fontFamily: "'Fraunces', serif" }}
           >
             {value}
           </div>
-          <p className="text-xs text-[#5B6270] font-medium leading-snug">{label}</p>
+          <p className="text-xs text-[#5B6270] dark:text-white/60 font-medium leading-snug">{label}</p>
         </motion.div>
       ))}
     </motion.div>

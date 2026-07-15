@@ -18,7 +18,7 @@ export default function App() {
   }, [isDark]);
 
   return (
-    <div className="min-h-screen bg-[#F1F3F6] dark:bg-[#0A0C10] transition-colors duration-300">
+    <div className="min-h-screen bg-[#FBFAF6] dark:bg-[#0A0C10] transition-colors duration-300">
       <Navbar isDark={isDark} setIsDark={setIsDark} />
       <Routes>
         <Route path="/" element={<Home isLoading={isLoading} setIsLoading={setIsLoading} />} />
