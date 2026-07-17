@@ -1,73 +1,113 @@
-# React + TypeScript + Vite
+# ARLY — AI Product Finder (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern e-commerce price comparison SPA built with React 19, TypeScript, Tailwind CSS v4, and Supabase auth.
 
-Currently, two official plugins are available:
+Users paste a Nepali product link and ARLY extracts pricing data from 10+ local retailers, then compares prices across stores to find the cheapest option.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech Stack
 
-## React Compiler
+| Layer | Technology |
+|---|---|
+| Framework | React 19 + Vite 8 |
+| Language | TypeScript 6 |
+| Routing | React Router DOM v7 |
+| Styling | Tailwind CSS v4 + PostCSS |
+| Auth | Supabase (email/password + Google OAuth) |
+| Icons | Lucide React + React Icons |
+| Animation | Framer Motion |
+| Build | Vite ( Rolldown ) |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Project Structure
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+arly-frontend/
+├── public/
+├── src/
+│   ├── components/
+│   │   ├── Navbar.tsx              # Sticky nav with profile dropdown
+│   │   ├── PageTransition.tsx      # Framer Motion page wrapper
+│   │   ├── ProductCard.tsx         # Extracted product display card
+│   │   ├── UrlInputHub.tsx         # URL paste input form
+│   │   └── home/                   # Landing page section components
+│   │       ├── Statsstrip.tsx
+│   │       ├── Problemsolution.tsx
+│   │       ├── Pipelineflow.tsx
+│   │       ├── Projectstructure.tsx
+│   │       └── Prosgrid.tsx
+│   ├── context/
+│   │   └── AuthContext.tsx         # Auth provider (login, register, logout, premium)
+│   ├── lib/
+│   │   └── supabase.ts            # Supabase browser client
+│   ├── pages/
+│   │   ├── home.tsx                # Landing page with URL input
+│   │   ├── about.tsx               # Project overview
+│   │   ├── result.tsx              # Scraping results + price comparison
+│   │   ├── login.tsx               # Email/password + Google OAuth login
+│   │   ├── register.tsx            # User registration
+│   │   ├── admin-dashboard.tsx     # Admin analytics (role-gated)
+│   │   ├── purchase.tsx            # Diamond VIP upgrade checkout
+│   │   └── footer.tsx              # Shared footer
+│   ├── types/
+│   │   ├── product.ts              # ProductData, CompareResponse types
+│   │   └── user.ts                 # User, UserProfile, Session types
+│   ├── App.tsx                     # Root router + AuthProvider
+│   ├── main.tsx                    # Entry point
+│   └── index.css                   # Tailwind directives + global styles
+├── .env                            # Supabase keys (gitignored)
+├── vite.config.ts                  # Vite config with API proxy rules
+├── tailwind.config.js
+├── postcss.config.js
+└── package.json
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Routes
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Path | Page | Access |
+|---|---|---|
+| `/` | Home (URL input hub) | Public |
+| `/result?url=...` | Scraping results + comparison | Public |
+| `/about` | Project overview | Public |
+| `/login` | Email/password + Google OAuth | Public |
+| `/register` | User registration | Public |
+| `/admin/dashboard` | Admin analytics dashboard | Admin only |
+| `/purchase` | Diamond VIP upgrade | Authenticated |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## API Proxy Configuration
+
+The Vite dev server proxies requests to three backend services:
+
+| Frontend Path | Backend Service | Port |
+|---|---|---|
+| `/api/auth/*` | Next.js (auth routes) | 3000 |
+| `/api/purchase/*` | Next.js (webhook mock) | 3000 |
+| `/api/*` | Query Scraper (LLM extraction) | 3002 |
+| `/compare-api/*` | Product Scraper (price comparison) | 3001 |
+
+## Setup
+
+```bash
+cd arly-frontend
+npm install
+
+# Create .env file with your Supabase credentials
+echo "VITE_SUPABASE_URL=your_url" > .env
+echo "VITE_SUPABASE_ANON_KEY=your_key" >> .env
+
+npm run dev
+```
+
+## Environment Variables
+
+| Variable | Description |
+|---|---|
+| `VITE_SUPABASE_URL` | Your Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Your Supabase anonymous/public key |
+
+## Scripts
+
+```bash
+npm run dev      # Start dev server (port 5173)
+npm run build    # Production build
+npm run preview  # Preview production build
+npm run lint     # Run ESLint
 ```
