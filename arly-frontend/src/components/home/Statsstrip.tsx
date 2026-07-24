@@ -1,11 +1,11 @@
 import { motion, type Variants } from 'framer-motion';
-import { FiLink2, FiGlobe, FiCpu, FiClock } from 'react-icons/fi';
+import { Link2, Globe, Cpu, Clock } from 'lucide-react';
 
 const stats = [
-  { icon: FiLink2, value: '1', label: 'Link is all you paste' },
-  { icon: FiGlobe, value: '10+', label: 'Nepali retailers cross-checked' },
-  { icon: FiCpu, value: '2', label: 'LLM passes — extract, then summarize' },
-  { icon: FiClock, value: '~20s', label: 'Typical time to full comparison' },
+  { icon: Link2, value: '1', label: 'Link is all you paste' },
+  { icon: Globe, value: '10+', label: 'Nepali retailers cross-checked' },
+  { icon: Cpu, value: '2', label: 'LLM passes — extract, then summarize' },
+  { icon: Clock, value: '~20s', label: 'Typical time to full comparison' },
 ];
 
 const container: Variants = {
