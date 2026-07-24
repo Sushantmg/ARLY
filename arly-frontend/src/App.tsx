@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './pages/footer';
@@ -16,6 +17,7 @@ export default function App() {
   const [isDark, setIsDark] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
   });
+  const location = useLocation();
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
@@ -26,15 +28,17 @@ export default function App() {
     <AuthProvider>
       <div className="min-h-screen bg-[#FBFAF6] dark:bg-[#0A0C10] transition-colors duration-300">
         <Navbar isDark={isDark} setIsDark={setIsDark} />
-        <Routes>
-          <Route path="/" element={<Home isLoading={isLoading} setIsLoading={setIsLoading} />} />
-          <Route path="/result" element={<Result setIsLoading={setIsLoading} />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/purchase" element={<Purchase />} />
-        </Routes>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<Home isLoading={isLoading} setIsLoading={setIsLoading} />} />
+            <Route path="/result" element={<Result setIsLoading={setIsLoading} />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/purchase" element={<Purchase />} />
+          </Routes>
+        </AnimatePresence>
         <Footer />
       </div>
     </AuthProvider>
