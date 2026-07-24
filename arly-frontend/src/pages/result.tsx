@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import StoreGrid from '../components/StoreGrid';
-import PageTransition from '../components/PageTransition';
+import Skeleton from '../components/Skeleton';
 import type { BackendProduct, StoreResult, CompareResponse, ProductLookupResponse } from '../types/product';
-import { FiExternalLink, FiTrendingDown, FiPackage, FiClock, FiCheckCircle } from 'react-icons/fi';
+import { ExternalLink, TrendingDown, Package, Clock, CheckCircle } from 'lucide-react';
 
 const CATALOG_DOMAINS = ['olizstore.com', 'brother-mart.com'];
 
@@ -49,7 +49,7 @@ function CatalogResult({ lookup }: { lookup: ProductLookupResponse }) {
         </div>
         <div className="flex items-center gap-4 text-sm">
           <span className={`flex items-center gap-1 font-medium ${availColor}`}>
-            {product.availability_normalized === 'in_stock' ? <FiCheckCircle /> : <FiClock />}
+            {product.availability_normalized === 'in_stock' ? <CheckCircle size={14} /> : <Clock size={14} />}
             {product.availability_raw}
           </span>
           <span className="text-xs text-gray-400 dark:text-white/40">
@@ -69,7 +69,7 @@ function CatalogResult({ lookup }: { lookup: ProductLookupResponse }) {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 mt-3"
         >
-          View on {product.source_site} <FiExternalLink />
+          View on {product.source_site} <ExternalLink size={12} />
         </a>
       </div>
 
@@ -87,7 +87,7 @@ function CatalogResult({ lookup }: { lookup: ProductLookupResponse }) {
           {matches.tier1.length > 0 && (
             <div className="px-4">
               <p className="text-xs font-semibold text-green-700 dark:text-green-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <FiTrendingDown /> Exact Matches
+                <TrendingDown size={14} /> Exact Matches
               </p>
               <div className="space-y-3">
                 {matches.tier1.map((m, i) => (
@@ -168,7 +168,7 @@ function MatchCard({ match }: { match: ProductLookupResponse['matches']['tier1']
         rel="noopener noreferrer"
         className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 mt-2"
       >
-        View store <FiExternalLink />
+                            View store <ExternalLink size={12} />
       </a>
     </div>
   );
@@ -265,9 +265,26 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
           )}
 
           {compareLoading && (
-            <div className="mt-6 text-center py-8">
-              <div className="animate-spin h-6 w-6 text-blue-600 dark:text-blue-400 mx-auto mb-3 border-4 border-gray-300 dark:border-white/20 border-t-blue-600 dark:border-t-blue-400 rounded-full"></div>
-              <p className="text-sm text-gray-500 dark:text-white/60">Ranking best matches across stores…</p>
+            <div className="mt-6 space-y-6 px-4">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-20 w-full rounded-xl" />
+              <div className="space-y-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="bg-white dark:bg-[#12101f]/70 border border-gray-100 dark:border-white/10 rounded-xl p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-3 w-full" />
+                      </div>
+                      <div className="text-right space-y-2 shrink-0">
+                        <Skeleton className="h-5 w-20 ml-auto" />
+                        <Skeleton className="h-3 w-16 ml-auto" />
+                      </div>
+                    </div>
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -297,7 +314,7 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
               {compareData.most_relevant && (
                 <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800/30 rounded-xl p-4">
                   <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                    <FiPackage /> Best Match
+                    <Package size={14} /> Best Match
                   </p>
                   <p className="text-sm text-gray-700 dark:text-white/80 leading-relaxed">{compareData.most_relevant}</p>
                 </div>
@@ -306,12 +323,12 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
               {compareData.cheaper_alternatives.length > 0 && (
                 <div>
                   <p className="text-sm font-bold text-green-700 dark:text-green-400 mb-3 flex items-center gap-1.5">
-                    <FiTrendingDown /> Cheaper Alternatives Found
+                    <TrendingDown size={14} /> Cheaper Alternatives Found
                   </p>
                   <div className="space-y-3">
                     {compareData.cheaper_alternatives.map((alt, i) => (
-                      <div key={i} className="bg-white dark:bg-[#12101f]/70 border border-green-200 dark:border-green-800/30 rounded-xl p-4 hover:shadow-md transition-shadow">
-                        <div className="flex items-start justify-between gap-4">
+                        <div key={i} className="bg-white dark:bg-[#12101f]/70 border border-green-200 dark:border-green-800/30 rounded-xl p-4 hover:shadow-md transition-shadow">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                           <div className="flex-1">
                             <p className="font-semibold text-gray-900 dark:text-white/90 text-sm">{alt.product}</p>
                             <p className="text-xs text-gray-500 dark:text-white/50 mt-1">{alt.description}</p>
@@ -328,7 +345,7 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 mt-2"
                           >
-                            View store <FiExternalLink />
+        View store <ExternalLink size={12} />
                           </a>
                         )}
                       </div>
@@ -342,7 +359,7 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
                   <p className="text-sm font-bold text-gray-600 dark:text-white/60 mb-3">Other Similar Products</p>
                   <div className="space-y-2">
                     {compareData.other_similar.map((sim, i) => (
-                      <div key={i} className="bg-white dark:bg-[#12101f]/50 border border-gray-100 dark:border-white/5 rounded-xl p-3 flex items-start justify-between gap-4">
+                      <div key={i} className="bg-white dark:bg-[#12101f]/50 border border-gray-100 dark:border-white/5 rounded-xl p-3 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                         <div className="flex-1">
                           <p className="font-medium text-gray-800 dark:text-white/80 text-sm">{sim.product}</p>
                           <p className="text-xs text-gray-400 dark:text-white/40 mt-0.5">{sim.description}</p>
@@ -356,7 +373,7 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-0.5 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-500"
                             >
-                              view <FiExternalLink />
+                              view <ExternalLink size={12} />
                             </a>
                           )}
                         </div>
