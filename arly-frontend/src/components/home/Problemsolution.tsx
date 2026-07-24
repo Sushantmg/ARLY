@@ -1,5 +1,5 @@
 import { motion, type Variants } from 'framer-motion';
-import { FiXCircle, FiCheckCircle } from 'react-icons/fi';
+import { XCircle, CheckCircle } from 'lucide-react';
 
 const problems = [
   'Opening 8–10 tabs (Daraz, SastoDeal, Hamrobazaar…) for one product',
@@ -54,7 +54,7 @@ export default function ProblemSolution() {
           <ul className="space-y-3">
             {problems.map((p) => (
               <li key={p} className="flex gap-3 text-sm text-[#5B6270] dark:text-white/60 leading-relaxed">
-                <FiXCircle className="mt-0.5 shrink-0 text-[#B23A48] dark:text-red-400" />
+                <XCircle className="mt-0.5 shrink-0 text-[#B23A48] dark:text-red-400" size={18} />
                 {p}
               </li>
             ))}
@@ -73,7 +73,7 @@ export default function ProblemSolution() {
           <ul className="space-y-3">
             {fixes.map((f) => (
               <li key={f} className="flex gap-3 text-sm text-[#5B6270] dark:text-white/60 leading-relaxed">
-                <FiCheckCircle className="mt-0.5 shrink-0 text-[#21365E] dark:text-blue-400" />
+                <CheckCircle className="mt-0.5 shrink-0 text-[#21365E] dark:text-blue-400" size={18} />
                 {f}
               </li>
             ))}
