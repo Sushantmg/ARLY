@@ -1,29 +1,29 @@
 import { motion, type Variants } from 'framer-motion';
-import { FiLink2, FiCode, FiCpu, FiShare2, FiFileText } from 'react-icons/fi';
+import { Link2, Code, Cpu, Share2, FileText } from 'lucide-react';
 
 const steps = [
   {
-    icon: FiLink2,
+    icon: Link2,
     title: 'Paste link',
     detail: 'You drop in a product URL from any Nepali retailer.',
   },
   {
-    icon: FiCode,
+    icon: Code,
     title: 'Scrape source',
     detail: 'ARLY fetches the page and pulls the raw product data.',
   },
   {
-    icon: FiCpu,
+    icon: Cpu,
     title: 'LLM normalize',
     detail: 'An LLM turns the mess into a clean name, price, and spec sheet.',
   },
   {
-    icon: FiShare2,
+    icon: Share2,
     title: 'Fan-out search',
     detail: 'That clean name is queried across 10+ other local stores.',
   },
   {
-    icon: FiFileText,
+    icon: FileText,
     title: 'LLM summary',
     detail: 'Results are ranked and summarized so you can decide at a glance.',
   },
