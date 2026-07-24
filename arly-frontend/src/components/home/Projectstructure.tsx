@@ -1,24 +1,24 @@
 import { motion, type Variants } from 'framer-motion';
-import { FiMonitor, FiServer, FiCpu, FiShoppingBag, FiArrowRight } from 'react-icons/fi';
+import { Monitor, Server, Cpu, ShoppingBag, ArrowRight } from 'lucide-react';
 
 const layers = [
   {
-    icon: FiMonitor,
+    icon: Monitor,
     name: 'Client',
     detail: 'React + TypeScript, Tailwind CSS, Framer Motion',
   },
   {
-    icon: FiServer,
+    icon: Server,
     name: 'Scraper service',
     detail: 'Fetches & parses the source product page',
   },
   {
-    icon: FiCpu,
+    icon: Cpu,
     name: 'LLM layer',
     detail: 'Normalizes data, then ranks & summarizes matches',
   },
   {
-    icon: FiShoppingBag,
+    icon: ShoppingBag,
     name: '10+ retailers',
     detail: 'Daraz, SastoDeal, Hamrobazaar & other NP stores',
   },
@@ -74,14 +74,14 @@ export default function ProjectStructure() {
           {layers.map(({ icon: Icon, name, detail }, i) => (
             <motion.div key={name} variants={item} className="flex items-center gap-4 py-3">
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#21365E]/8 dark:bg-blue-900/20 text-[#21365E] dark:text-blue-300 shrink-0">
-                <Icon />
+                <Icon size={20} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-[#16181F] dark:text-white text-sm">{name}</p>
                 <p className="text-xs text-[#5B6270] dark:text-white/60">{detail}</p>
               </div>
               {i < layers.length - 1 && (
-                <FiArrowRight className="hidden sm:block text-[#5B6270]/30 shrink-0" />
+                <ArrowRight size={16} className="hidden sm:block text-[#5B6270]/30 shrink-0" />
               )}
             </motion.div>
           ))}
