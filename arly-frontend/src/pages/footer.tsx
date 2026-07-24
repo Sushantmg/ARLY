@@ -33,12 +33,12 @@ export default function Footer() {
               <span className="text-xs uppercase tracking-widest text-black/40 dark:text-white/40 mb-1">
                 Legal
               </span>
-              <Link to="/privacy" className="text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white transition-colors">
+              <span className="text-black/30 dark:text-white/30 text-sm cursor-not-allowed select-none">
                 Privacy
-              </Link>
-              <Link to="/terms" className="text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white transition-colors">
+              </span>
+              <span className="text-black/30 dark:text-white/30 text-sm cursor-not-allowed select-none">
                 Terms
-              </Link>
+              </span>
             </div>
 
             <div className="flex flex-col gap-2">
