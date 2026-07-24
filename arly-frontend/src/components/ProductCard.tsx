@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Package } from 'lucide-react';
 import type { BackendProduct } from '../types/product';
 
 interface ProductCardProps {
@@ -13,9 +15,11 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export default function ProductCard({ product, method }: ProductCardProps) {
+  const [imgError, setImgError] = useState(false);
   const hasDiscount = product.original_price != null && product.current_price != null && product.original_price > product.current_price;
 
   const specEntries = Object.entries(product.key_specs || {}).filter(([, v]) => v);
+  const showImage = product.image_url && product.image_url !== 'not available' && !imgError;
 
   return (
     <div className="w-full max-w-3xl mx-auto mt-6 bg-white dark:bg-[#12101f]/70 border border-gray-100 dark:border-white/10 rounded-2xl shadow-xl overflow-hidden transition-all hover:shadow-2xl">
@@ -23,17 +27,18 @@ export default function ProductCard({ product, method }: ProductCardProps) {
 
         {/* Product Image */}
         <div className="w-full sm:w-48 h-48 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center border border-gray-200 dark:border-white/10 shrink-0 overflow-hidden">
-          {product.image_url && product.image_url !== 'not available' ? (
+          {showImage ? (
             <img
               src={product.image_url}
               alt={product.product_name || 'Product'}
               className="w-full h-full object-contain"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              onError={() => setImgError(true)}
             />
           ) : (
-            <svg className="h-12 w-12 text-gray-400 dark:text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 002-2H4a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
+            <div className="flex flex-col items-center justify-center gap-2 text-gray-300 dark:text-white/20">
+              <Package size={40} strokeWidth={1.5} />
+              <span className="text-[11px] font-medium">No image</span>
+            </div>
           )}
         </div>
 
