@@ -71,7 +71,6 @@ export default function Home({ isLoading, setIsLoading }: HomeProps) {
         <PipelineFlow />
         <ProjectStructure />
         <ProsGrid />
-        <footer />
       </div>
     </div>
   );

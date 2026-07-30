@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import PageTransition from '../components/PageTransition';
+import StoreGrid from '../components/StoreGrid';
+import Skeleton from '../components/Skeleton';
 import type { BackendProduct, StoreResult, CompareResponse, ProductLookupResponse } from '../types/product';
-import { FiExternalLink, FiTrendingDown, FiPackage, FiClock, FiCheckCircle } from 'react-icons/fi';
+import { ExternalLink, TrendingDown, Package, Clock, CheckCircle } from 'lucide-react';
 
 const CATALOG_DOMAINS = ['olizstore.com', 'brother-mart.com'];
 
@@ -48,7 +50,7 @@ function CatalogResult({ lookup }: { lookup: ProductLookupResponse }) {
         </div>
         <div className="flex items-center gap-4 text-sm">
           <span className={`flex items-center gap-1 font-medium ${availColor}`}>
-            {product.availability_normalized === 'in_stock' ? <FiCheckCircle /> : <FiClock />}
+            {product.availability_normalized === 'in_stock' ? <CheckCircle size={14} /> : <Clock size={14} />}
             {product.availability_raw}
           </span>
           <span className="text-xs text-gray-400 dark:text-white/40">
@@ -68,7 +70,7 @@ function CatalogResult({ lookup }: { lookup: ProductLookupResponse }) {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 mt-3"
         >
-          View on {product.source_site} <FiExternalLink />
+          View on {product.source_site} <ExternalLink size={12} />
         </a>
       </div>
 
@@ -86,7 +88,7 @@ function CatalogResult({ lookup }: { lookup: ProductLookupResponse }) {
           {matches.tier1.length > 0 && (
             <div className="px-4">
               <p className="text-xs font-semibold text-green-700 dark:text-green-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <FiTrendingDown /> Exact Matches
+                <TrendingDown size={14} /> Exact Matches
               </p>
               <div className="space-y-3">
                 {matches.tier1.map((m, i) => (
@@ -167,7 +169,7 @@ function MatchCard({ match }: { match: ProductLookupResponse['matches']['tier1']
         rel="noopener noreferrer"
         className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 mt-2"
       >
-        View store <FiExternalLink />
+                            View store <ExternalLink size={12} />
       </a>
     </div>
   );
@@ -179,15 +181,12 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
   const [extractionMethod, setExtractionMethod] = useState<string>('');
   const [storeResults, setStoreResults] = useState<StoreResult[]>([]);
   const [compareData, setCompareData] = useState<CompareResponse | null>(null);
-  const [extracting, setExtracting] = useState(true);
   const [compareLoading, setCompareLoading] = useState(false);
-  const [compareError, setCompareError] = useState<string>('');
-  const [showAnalysis, setShowAnalysis] = useState(true);
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
     let cancelled = false;
-    setExtracting(true);
+    setIsLoading(true);
 
     fetch('/api/', {
       method: 'POST',
@@ -204,7 +203,6 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
           setProduct(data.product);
           setExtractionMethod(data.method || '');
           setStoreResults(data.store_results || []);
-          setExtracting(false);
 
           setCompareLoading(true);
           fetch('/compare-api/compare', {
@@ -219,21 +217,17 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
             .then((cmp) => {
               if (!cancelled) setCompareData(cmp);
             })
-            .catch((err) => {
-              if (!cancelled) setCompareError(err.message || 'Compare failed');
-            })
+            .catch(() => {})
             .finally(() => {
               if (!cancelled) setCompareLoading(false);
             });
         } else {
-          setExtracting(false);
           setError(data.error || 'Extraction failed');
         }
         setIsLoading(false);
       })
       .catch((err) => {
         if (cancelled) return;
-        setExtracting(false);
         setError(err.message || 'Failed to connect to backend');
         setIsLoading(false);
       });
@@ -248,108 +242,152 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
       {product ? (
         <div>
           <div className="mb-6 flex justify-between items-center px-4">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-white/90" style={{ fontFamily: "'Fraunces', serif" }}>
-              {compareLoading ? 'Searching for products…' : 'Search Results'}
-            </h2>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white/90">Scraping Results</h2>
             <button
               onClick={() => navigate('/')}
               className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500"
             >
-              ← Search Another
+              ← Scrape Another Item
             </button>
           </div>
 
-          {/* Product extracted from URL — always visible */}
           <ProductCard product={product} method={extractionMethod} />
 
-          {/* Searching indicator */}
-          {compareLoading && (
-            <div className="mt-6 flex items-center gap-3 px-4 py-3 bg-[#FBFAF6] dark:bg-[#12101f]/50 border border-[#D98E1B]/20 dark:border-[#D98E1B]/10 rounded-xl">
-              <div className="animate-spin h-4 w-4 text-[#D98E1B] border-2 border-[#D98E1B]/30 border-t-[#D98E1B] rounded-full shrink-0"></div>
-              <p className="text-sm text-gray-600 dark:text-white/60">
-                Searching Daraz, OlizStore, BrotherMart for best matches…
-              </p>
+          {storeResults.length > 0 && (
+            <div className="mt-8 px-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-800 dark:text-white/90">Store Inventory</h3>
+                <span className="text-xs text-gray-400 dark:text-white/40">
+                  {totalStoreItems} products across {storeResults.length} stores
+                </span>
+              </div>
+              <StoreGrid stores={storeResults} />
             </div>
           )}
 
-          {/* LLM summary — collapsible analysis dropdown */}
-          {(compareData || compareLoading || compareError) && (
-            <div className="mt-6 px-4">
-              <button
-                onClick={() => setShowAnalysis(!showAnalysis)}
-                className="w-full flex items-center justify-between px-4 py-3 bg-[#FBFAF6] dark:bg-[#12101f]/50 border border-[#D98E1B]/20 dark:border-[#D98E1B]/10 rounded-xl text-sm font-semibold text-[#16181F] dark:text-white/90 hover:bg-[#FBFAF6]/80 dark:hover:bg-[#12101f]/70 transition-colors"
-              >
-                <span className="flex items-center gap-2">
-                  <FiPackage />
-                  {compareLoading ? 'Analyzing prices…' : 'Price Analysis'}
-                </span>
-                <svg className={`h-4 w-4 transition-transform ${showAnalysis ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-              </button>
-
-              {showAnalysis && (
-                <div className="mt-3 space-y-4 pl-1">
-                  {compareLoading && !compareData && (
-                    <div className="flex items-center gap-3 py-3">
-                      <div className="animate-spin h-4 w-4 text-[#D98E1B] border-2 border-[#D98E1B]/30 border-t-[#D98E1B] rounded-full shrink-0"></div>
-                      <p className="text-sm text-gray-600 dark:text-white/60">
-                        Searching stores for exact and similar matches…
-                      </p>
+          {compareLoading && (
+            <div className="mt-6 space-y-6 px-4">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-20 w-full rounded-xl" />
+              <div className="space-y-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="bg-white dark:bg-[#12101f]/70 border border-gray-100 dark:border-white/10 rounded-xl p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-3 w-full" />
+                      </div>
+                      <div className="text-right space-y-2 shrink-0">
+                        <Skeleton className="h-5 w-20 ml-auto" />
+                        <Skeleton className="h-3 w-16 ml-auto" />
+                      </div>
                     </div>
-                  )}
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-                  {compareError && !compareData && (
-                    <p className="text-sm text-[#B23A48] dark:text-red-400 py-2">{compareError}</p>
-                  )}
+          {compareData && (
+            <div className="mt-6 space-y-6 px-4">
+              {compareData.interpretation && (
+                <div className="bg-[#FBFAF6] dark:bg-[#12101f]/50 border border-[#16181F]/8 dark:border-white/10 rounded-xl p-5">
+                  <p className="text-xs font-semibold text-[#D98E1B] uppercase tracking-wider mb-2">AI Analysis</p>
+                  <p className="text-sm text-gray-700 dark:text-white/80 leading-relaxed whitespace-pre-line">{compareData.interpretation}</p>
+                </div>
+              )}
 
-                  {compareData && (
-                    <>
-                      {compareData.interpretation && (
-                        <div className="bg-white/60 dark:bg-white/5 border border-[#16181F]/8 dark:border-white/10 rounded-xl p-4">
-                          <p className="text-xs font-semibold text-[#D98E1B] uppercase tracking-wider mb-2">AI Analysis</p>
-                          <p className="text-sm text-gray-700 dark:text-white/80 leading-relaxed whitespace-pre-line">{compareData.interpretation}</p>
+              {compareData.cheapest && (
+                <div className="bg-[#FBFAF6] dark:bg-[#12101f]/50 border border-[#D98E1B]/30 dark:border-[#D98E1B]/20 rounded-xl p-4">
+                  <p className="text-xs font-semibold text-[#D98E1B] uppercase tracking-wider mb-1">Cheapest Price Verdict</p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-white/90 leading-relaxed">{compareData.cheapest}</p>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-gray-800 dark:text-white/90">Price Comparison</h3>
+                <span className="text-xs text-gray-400 dark:text-white/40">
+                  {compareData.total_products} products analyzed
+                </span>
+              </div>
+
+              {compareData.most_relevant && (
+                <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800/30 rounded-xl p-4">
+                  <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                    <Package size={14} /> Best Match
+                  </p>
+                  <p className="text-sm text-gray-700 dark:text-white/80 leading-relaxed">{compareData.most_relevant}</p>
+                </div>
+              )}
+
+              {compareData.cheaper_alternatives.length > 0 && (
+                <div>
+                  <p className="text-sm font-bold text-green-700 dark:text-green-400 mb-3 flex items-center gap-1.5">
+                    <TrendingDown size={14} /> Cheaper Alternatives Found
+                  </p>
+                  <div className="space-y-3">
+                    {compareData.cheaper_alternatives.map((alt, i) => (
+                        <div key={i} className="bg-white dark:bg-[#12101f]/70 border border-green-200 dark:border-green-800/30 rounded-xl p-4 hover:shadow-md transition-shadow">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                          <div className="flex-1">
+                            <p className="font-semibold text-gray-900 dark:text-white/90 text-sm">{alt.product}</p>
+                            <p className="text-xs text-gray-500 dark:text-white/50 mt-1">{alt.description}</p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <p className="font-bold text-gray-900 dark:text-white">{alt.price}</p>
+                            <p className="text-xs font-semibold text-green-600 dark:text-green-400">{alt.savings}</p>
+                          </div>
                         </div>
-                      )}
-
-                      {/* Cheaper alternative found — LLM summary + link */}
-                      {compareData.cheaper_alternatives?.length > 0 && (
-                        <div className="bg-[#FBFAF6] dark:bg-[#12101f]/50 border border-[#D98E1B]/30 dark:border-[#D98E1B]/20 rounded-xl p-4">
-                          <p className="text-xs font-semibold text-[#D98E1B] uppercase tracking-wider mb-1">Cheapest Price Verdict</p>
-                          <p className="text-sm font-medium text-gray-800 dark:text-white/90 leading-relaxed">{compareData.cheapest}</p>
+                        {alt.link && (
                           <a
-                            href={compareData.cheaper_alternatives[0].link}
+                            href={alt.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#D98E1B] hover:text-[#D98E1B]/80 transition-colors mt-2"
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 mt-2"
                           >
-                            View cheapest option <FiExternalLink />
+        View store <ExternalLink size={12} />
                           </a>
-                        </div>
-                      )}
-
-                      {/* No cheaper product found (products were scraped but none beaten the source price) */}
-                      {compareData.total_products > 0 && !compareData.cheaper_alternatives?.length && (
-                        <p className="text-sm text-gray-500 dark:text-white/50 text-center py-3">
-                          No cheaper product found across the platform.
-                        </p>
-                      )}
-
-                      {compareData.most_relevant && (
-                        <div className="bg-white/60 dark:bg-white/5 border border-[#16181F]/8 dark:border-white/10 rounded-xl p-4">
-                          <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                            <FiPackage /> Best Match
-                          </p>
-                          <p className="text-sm text-gray-700 dark:text-white/80 leading-relaxed">{compareData.most_relevant}</p>
-                        </div>
-                      )}
-
-                      {compareData.total_products === 0 && !compareData.interpretation && (
-                        <p className="text-sm text-gray-400 dark:text-white/40 text-center py-3">
-                          No matching products found in scraped stores.
-                        </p>
-                      )}
-                    </>
-                  )}
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
+              )}
+
+              {compareData.other_similar.length > 0 && (
+                <div>
+                  <p className="text-sm font-bold text-gray-600 dark:text-white/60 mb-3">Other Similar Products</p>
+                  <div className="space-y-2">
+                    {compareData.other_similar.map((sim, i) => (
+                      <div key={i} className="bg-white dark:bg-[#12101f]/50 border border-gray-100 dark:border-white/5 rounded-xl p-3 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-800 dark:text-white/80 text-sm">{sim.product}</p>
+                          <p className="text-xs text-gray-400 dark:text-white/40 mt-0.5">{sim.description}</p>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="font-semibold text-gray-900 dark:text-white text-sm">{sim.price}</p>
+                          {sim.link && (
+                            <a
+                              href={sim.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-0.5 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-500"
+                            >
+                              view <ExternalLink size={12} />
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {compareData.cheaper_alternatives.length === 0 && compareData.other_similar.length === 0 && !compareData.cheapest && (
+                <p className="text-sm text-gray-400 dark:text-white/40 text-center py-4">
+                  No alternatives found in scraped stores.
+                </p>
               )}
             </div>
           )}
@@ -364,12 +402,6 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
           >
             ← Try another URL
           </button>
-        </div>
-      ) : extracting ? (
-        <div className="text-center py-16 px-4">
-          <div className="animate-spin h-8 w-8 text-[#D98E1B] mx-auto mb-4 border-4 border-[#D98E1B]/30 border-t-[#D98E1B] rounded-full"></div>
-          <p className="text-sm font-medium text-gray-700 dark:text-white/70 mb-1">Extracting product data…</p>
-          <p className="text-xs text-gray-400 dark:text-white/40 break-all max-w-md mx-auto">{targetUrl}</p>
         </div>
       ) : null}
     </>

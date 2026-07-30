@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, Loader2, AlertCircle } from "lucide-react";
+import { Mail, Lock, Loader2, AlertCircle, Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabase";
 
@@ -12,6 +12,11 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [touched, setTouched] = useState({ email: false, password: false });
+
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const passwordValid = password.length >= 6;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -99,8 +104,29 @@ export default function Login() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-[#FBFAF6] dark:bg-white/5 py-3 pl-10 pr-4 text-sm text-gray-900 dark:text-white/90 placeholder:text-gray-400 dark:placeholder:text-white/30 outline-none focus:ring-2 focus:ring-violet-500/40 focus:border-violet-500/40 transition-all"
+                  onBlur={() => setTouched((t) => ({ ...t, email: true }))}
+                  className={`w-full rounded-xl border bg-[#FBFAF6] dark:bg-white/5 py-3 pl-10 pr-10 text-sm text-gray-900 dark:text-white/90 placeholder:text-gray-400 dark:placeholder:text-white/30 outline-none focus:ring-2 focus:ring-violet-500/40 focus:border-violet-500/40 transition-all ${
+                    touched.email && email && !emailValid
+                      ? "border-red-400 dark:border-red-500/40"
+                      : touched.email && emailValid
+                        ? "border-green-400 dark:border-green-500/40"
+                        : "border-gray-200 dark:border-white/10"
+                  }`}
                   placeholder="you@example.com"
+                />
+                {touched.email && email && (
+                  <span className="absolute right-3.5 top-1/2 -translate-y-1/2">
+                    {emailValid ? (
+                      <CheckCircle2 size={16} className="text-green-500" />
+                    ) : (
+                      <AlertCircle size={16} className="text-red-400" />
+                    )}
+                  </span>
+                )}
+              </div>
+              {touched.email && email && !emailValid && (
+                <p className="mt-1 text-xs text-red-500 dark:text-red-400">Enter a valid email address</p>
+              )}
                 />
               </div>
             </div>
@@ -112,12 +138,32 @@ export default function Login() {
               <div className="relative">
                 <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-white/30" />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-[#FBFAF6] dark:bg-white/5 py-3 pl-10 pr-4 text-sm text-gray-900 dark:text-white/90 placeholder:text-gray-400 dark:placeholder:text-white/30 outline-none focus:ring-2 focus:ring-violet-500/40 focus:border-violet-500/40 transition-all"
+                  onBlur={() => setTouched((t) => ({ ...t, password: true }))}
+                  className={`w-full rounded-xl border bg-[#FBFAF6] dark:bg-white/5 py-3 pl-10 pr-10 text-sm text-gray-900 dark:text-white/90 placeholder:text-gray-400 dark:placeholder:text-white/30 outline-none focus:ring-2 focus:ring-violet-500/40 focus:border-violet-500/40 transition-all ${
+                    touched.password && password && !passwordValid
+                      ? "border-red-400 dark:border-red-500/40"
+                      : touched.password && passwordValid
+                        ? "border-green-400 dark:border-green-500/40"
+                        : "border-gray-200 dark:border-white/10"
+                  }`}
                   placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-white/30 hover:text-gray-600 dark:hover:text-white/60 transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              {touched.password && password && !passwordValid && (
+                <p className="mt-1 text-xs text-red-500 dark:text-red-400">Password must be at least 6 characters</p>
+              )}
                 />
               </div>
             </div>

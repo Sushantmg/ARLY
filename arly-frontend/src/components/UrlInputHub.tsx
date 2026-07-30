@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { FiLink, FiArrowRight, FiLoader, FiAlertCircle } from 'react-icons/fi';
+import { Link, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 
 interface UrlInputHubProps {
   onUrlSubmit: (url: string) => void;
@@ -29,7 +29,7 @@ export default function UrlInputHub({ onUrlSubmit, isLoading }: UrlInputHubProps
         className="inline-flex items-center gap-2 rounded-full bg-[#21365E]/5 dark:bg-blue-300/10 px-3 py-1 text-xs font-semibold tracking-wide text-[#21365E] dark:text-blue-300 uppercase mb-5"
         style={{ fontFamily: "'JetBrains Mono', monospace" }}
       >
-        <FiLink className="text-[#D98E1B]" /> Step 1 of 5 — paste a link
+        <Link className="text-[#D98E1B]" size={14} /> Step 1 of 5 — paste a link
       </span>
 
       <h1
@@ -49,7 +49,7 @@ export default function UrlInputHub({ onUrlSubmit, isLoading }: UrlInputHubProps
       >
         <div className="flex flex-col sm:flex-row gap-2">
           <div className="relative flex-1">
-            <FiLink className="absolute left-4 top-1/2 -translate-y-1/2 text-[#5B6270]/50" />
+            <Link size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#5B6270]/50" />
             <input
               type="text"
               className={`block w-full rounded-xl border-0 py-4 pl-11 pr-4 text-[#16181F] dark:text-white/90 placeholder:text-[#5B6270]/50 focus:ring-2 focus:ring-inset focus:ring-[#21365E] text-sm bg-[#FBFAF6] dark:bg-white/5 outline-none transition-all ${
@@ -69,13 +69,13 @@ export default function UrlInputHub({ onUrlSubmit, isLoading }: UrlInputHubProps
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
-                <FiLoader className="animate-spin" />
+                <Loader2 size={16} className="animate-spin" />
                 Extracting…
               </span>
             ) : (
               <span className="flex items-center justify-center gap-2">
                 Extract product
-                <FiArrowRight className="transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
               </span>
             )}
           </button>
@@ -83,7 +83,7 @@ export default function UrlInputHub({ onUrlSubmit, isLoading }: UrlInputHubProps
       </form>
       {error && (
         <p className="mt-3 text-sm text-[#B23A48] text-left pl-2 font-medium flex items-center gap-1.5">
-          <FiAlertCircle /> {error}
+          <AlertCircle size={16} /> {error}
         </p>
       )}
     </div>

@@ -1,8 +1,5 @@
-import PageTransition from '../components/PageTransition';
-
 export default function About() {
   return (
-    <PageTransition>
       <div className="max-w-3xl mx-auto pt-12 pb-6 px-4">
         <div className="bg-white dark:bg-[#12101f]/70 border border-gray-100 dark:border-white/10 rounded-2xl shadow-xl p-8 sm:p-10">
           <span className="inline-flex items-center rounded-md bg-blue-50 dark:bg-blue-900/20 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:text-blue-400 ring-1 ring-inset ring-blue-700/10 mb-4">
@@ -55,6 +52,5 @@ export default function About() {
           </div>
         </div>
       </div>
-    </PageTransition>
   );
 }

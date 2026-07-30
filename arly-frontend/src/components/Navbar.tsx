@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Sun, Moon, LogIn, LogOut, Shield, ChevronDown, Gem } from "lucide-react";
+import { Sun, Moon, LogIn, LogOut, Shield, ChevronDown, Gem, Menu, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 interface NavbarProps {
@@ -12,6 +12,7 @@ export default function Navbar({ isDark, setIsDark }: NavbarProps) {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const navItems = [
@@ -27,6 +28,14 @@ export default function Navbar({ isDark, setIsDark }: NavbarProps) {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) setMobileOpen(false);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const premiumUntil = user?.premium_until;
@@ -71,8 +80,8 @@ export default function Navbar({ isDark, setIsDark }: NavbarProps) {
             </div>
           </Link>
 
-          {/* Right side: nav + theme toggle + auth */}
-          <div className="flex items-center gap-3">
+          {/* Desktop right side */}
+          <div className="hidden md:flex items-center gap-3">
             <div className="flex items-center rounded-xl bg-white/40 dark:bg-white/5 p-1 backdrop-blur-lg">
               {navItems.map((item) => {
                 const active = location.pathname === item.path;
@@ -210,7 +219,97 @@ export default function Navbar({ isDark, setIsDark }: NavbarProps) {
               </div>
             )}
           </div>
+
+          {/* Mobile hamburger */}
+          <div className="flex md:hidden items-center gap-2">
+            <button
+              onClick={() => setIsDark(!isDark)}
+              className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/40 hover:bg-white/70 text-gray-600 hover:text-violet-700 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-300 dark:hover:text-violet-300 backdrop-blur-lg transition-all duration-300"
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun size={17} /> : <Moon size={17} />}
+            </button>
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/40 hover:bg-white/70 text-gray-600 hover:text-violet-700 dark:bg-white/5 dark:hover:bg-white/10 dark:text-slate-300 dark:hover:text-violet-300 backdrop-blur-lg transition-all duration-300"
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
+          </div>
         </nav>
+
+        {/* Mobile menu */}
+        {mobileOpen && (
+          <div className="md:hidden mt-2 rounded-2xl border border-white/20 bg-white/90 backdrop-blur-2xl shadow-2xl dark:border-violet-500/10 dark:bg-[#12101f]/90 p-4 space-y-2">
+            {navItems.map((item) => {
+              const active = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setMobileOpen(false)}
+                  className={`block rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+                    active
+                      ? "bg-gradient-to-r from-violet-500/15 to-blue-500/15 text-violet-700 dark:text-violet-300 border border-violet-200/60 dark:border-violet-500/30"
+                      : "text-gray-600 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-white/5"
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
+            <div className="border-t border-gray-200 dark:border-white/10 pt-2 mt-2">
+              {!user ? (
+                <Link
+                  to="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg"
+                >
+                  <LogIn size={15} />
+                  Login
+                </Link>
+              ) : (
+                <>
+                  <div className="px-4 py-3">
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">{user.username}</p>
+                    <p className="text-xs text-gray-500 dark:text-white/40">{user.email}</p>
+                  </div>
+                  {user.is_premium === false && (
+                    <Link
+                      to="/purchase"
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-500/10 transition-colors"
+                    >
+                      <Gem size={15} />
+                      Upgrade to VIP
+                    </Link>
+                  )}
+                  {user.role === "admin" && (
+                    <Link
+                      to="/admin/dashboard"
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 dark:text-white/70 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                    >
+                      <Shield size={15} />
+                      Admin Dashboard
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => {
+                      logout();
+                      setMobileOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                  >
+                    <LogOut size={15} />
+                    Sign Out
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );

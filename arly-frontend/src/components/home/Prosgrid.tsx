@@ -1,13 +1,13 @@
 import { motion, type Variants } from 'framer-motion';
-import { FiClock, FiEye, FiGlobe, FiLayers, FiMousePointer, FiMapPin } from 'react-icons/fi';
+import { Clock, Eye, Globe, Layers, MousePointer, MapPin } from 'lucide-react';
 
 const pros = [
-  { icon: FiClock, title: 'Minutes saved', detail: 'No more opening ten tabs by hand — one paste replaces the whole routine.' },
-  { icon: FiEye, title: 'Real price transparency', detail: 'See what the same product actually costs across the market, side by side.' },
-  { icon: FiGlobe, title: 'Wide local coverage', detail: 'Checks 10+ Nepali retail sites in one pass, not just one or two.' },
-  { icon: FiLayers, title: 'Clean, structured data', detail: 'An LLM turns messy listings into one consistent, comparable format.' },
-  { icon: FiMousePointer, title: 'One-paste simplicity', detail: 'No forms, filters, or manual search terms — just the link you already have.' },
-  { icon: FiMapPin, title: 'Built for Nepal', detail: 'Tuned to how local retailers list, name, and price their products.' },
+  { icon: Clock, title: 'Minutes saved', detail: 'No more opening ten tabs by hand — one paste replaces the whole routine.' },
+  { icon: Eye, title: 'Real price transparency', detail: 'See what the same product actually costs across the market, side by side.' },
+  { icon: Globe, title: 'Wide local coverage', detail: 'Checks 10+ Nepali retail sites in one pass, not just one or two.' },
+  { icon: Layers, title: 'Clean, structured data', detail: 'An LLM turns messy listings into one consistent, comparable format.' },
+  { icon: MousePointer, title: 'One-paste simplicity', detail: 'No forms, filters, or manual search terms — just the link you already have.' },
+  { icon: MapPin, title: 'Built for Nepal', detail: 'Tuned to how local retailers list, name, and price their products.' },
 ];
 
 const container: Variants = {
@@ -53,7 +53,7 @@ export default function ProsGrid() {
             className="rounded-2xl border border-[#16181F]/8 dark:border-white/10 bg-white/60 dark:bg-white/5 p-6 transition-shadow hover:shadow-[0_20px_40px_-24px_rgba(22,24,31,0.25)]"
           >
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#D98E1B]/10 text-[#D98E1B] mb-4">
-              <Icon className="text-lg" />
+              <Icon size={20} />
             </div>
             <h3 className="font-bold text-[#16181F] dark:text-white mb-1.5">{title}</h3>
             <p className="text-sm text-[#5B6270] dark:text-white/60 leading-relaxed">{detail}</p>
