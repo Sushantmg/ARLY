@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { BackendProduct } from '../types/product';
 
 interface ProductCardProps {
@@ -13,6 +14,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export default function ProductCard({ product, method }: ProductCardProps) {
+  const [imgError, setImgError] = useState(false);
   const hasDiscount = product.original_price != null && product.current_price != null && product.original_price > product.current_price;
 
   const specEntries = Object.entries(product.key_specs || {}).filter(([, v]) => v);
@@ -23,12 +25,12 @@ export default function ProductCard({ product, method }: ProductCardProps) {
 
         {/* Product Image */}
         <div className="w-full sm:w-48 h-48 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center border border-gray-200 dark:border-white/10 shrink-0 overflow-hidden">
-          {product.image_url && product.image_url !== 'not available' ? (
+          {product.image_url && product.image_url !== 'not available' && !imgError ? (
             <img
               src={product.image_url}
               alt={product.product_name || 'Product'}
               className="w-full h-full object-contain"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              onError={() => setImgError(true)}
             />
           ) : (
             <svg className="h-12 w-12 text-gray-400 dark:text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">

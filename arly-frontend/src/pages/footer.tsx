@@ -31,18 +31,6 @@ export default function Footer() {
 
             <div className="flex flex-col gap-2">
               <span className="text-xs uppercase tracking-widest text-black/40 dark:text-white/40 mb-1">
-                Legal
-              </span>
-              <Link to="/privacy" className="text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white transition-colors">
-                Privacy
-              </Link>
-              <Link to="/terms" className="text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white transition-colors">
-                Terms
-              </Link>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <span className="text-xs uppercase tracking-widest text-black/40 dark:text-white/40 mb-1">
                 Contact
               </span>
               <a href="mailto:hello@arly.app" className="text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white transition-colors">
