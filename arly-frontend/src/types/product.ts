@@ -28,14 +28,6 @@ export interface StoreResult {
 }
 
 /** Full POST / response from query_scrapper */
-export interface ScrapeResponse {
-  success: boolean;
-  product?: BackendProduct;
-  method?: string;  // json-ld | og-meta | dom-fallback | llm
-  store_results?: StoreResult[];
-  error?: string;
-}
-
 // ── Compare types (from /compare-api/compare) ──────────────
 
 export interface CheaperAlternative {
@@ -66,6 +58,7 @@ export interface CompareResponse {
   most_relevant: string | null;
   cheapest: string | null;
   cheaper_alternatives: CheaperAlternative[];
+  same_products?: { product: string; price: string; link?: string; site?: string }[];
   other_similar: SimilarProduct[];
   interpretation: string | null;
 }

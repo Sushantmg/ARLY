@@ -5,9 +5,11 @@ import PageTransition from '../components/PageTransition';
 import StoreGrid from '../components/StoreGrid';
 import Skeleton from '../components/Skeleton';
 import type { BackendProduct, StoreResult, CompareResponse, ProductLookupResponse } from '../types/product';
-import { ExternalLink, TrendingDown, Package, Clock, CheckCircle } from 'lucide-react';
+import { ExternalLink, TrendingDown, Package, Clock, CheckCircle, ChevronDown } from 'lucide-react';
 
-const CATALOG_DOMAINS = ['olizstore.com', 'brother-mart.com'];
+// olizstore.com flows through the generic extract+compare path (query_scrapper),
+// not the catalog product-lookup — the lookup adapter only handles /products/ URLs.
+const CATALOG_DOMAINS = ['brother-mart.com'];
 
 function isCatalogDomain(url: string): boolean {
   try {
@@ -237,6 +239,20 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
 
   const totalStoreItems = storeResults.reduce((sum, s) => sum + s.results.length, 0);
 
+  const cheaperSorted = compareData
+    ? [...compareData.cheaper_alternatives].sort((a, b) => {
+        const pa = parseInt((a.price || '').replace(/[^\d]/g, '')) || Infinity;
+        const pb = parseInt((b.price || '').replace(/[^\d]/g, '')) || Infinity;
+        return pa - pb;
+      })
+    : [];
+  const cheapestAlt = cheaperSorted[0];
+
+  const sameProducts =
+    compareData?.same_products && compareData.same_products.length > 0
+      ? compareData.same_products
+      : cheaperSorted;
+
   return (
     <>
       {product ? (
@@ -312,82 +328,83 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
                 </span>
               </div>
 
-              {compareData.most_relevant && (
+              {cheapestAlt ? (
                 <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800/30 rounded-xl p-4">
-                  <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     <Package size={14} /> Best Match
                   </p>
-                  <p className="text-sm text-gray-700 dark:text-white/80 leading-relaxed">{compareData.most_relevant}</p>
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900 dark:text-white/90 text-sm">{cheapestAlt.product}</p>
+                      <p className="text-xs text-gray-500 dark:text-white/50 mt-1">{cheapestAlt.description}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-bold text-blue-600 dark:text-blue-400">{cheapestAlt.price}</p>
+                      <p className="text-xs font-semibold text-blue-600 dark:text-blue-400">{cheapestAlt.savings}</p>
+                    </div>
+                  </div>
+                  {cheapestAlt.link && (
+                    <a
+                      href={cheapestAlt.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 mt-2"
+                    >
+                      View store <ExternalLink size={12} />
+                    </a>
+                  )}
                 </div>
+              ) : (
+                compareData.most_relevant && (
+                  <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800/30 rounded-xl p-4">
+                    <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                      <Package size={14} /> Best Match
+                    </p>
+                    <p className="text-sm text-gray-700 dark:text-white/80 leading-relaxed">{compareData.most_relevant}</p>
+                  </div>
+                )
               )}
 
-              {compareData.cheaper_alternatives.length > 0 && (
+              {sameProducts.length > 0 ? (
                 <div>
-                  <p className="text-sm font-bold text-green-700 dark:text-green-400 mb-3 flex items-center gap-1.5">
-                    <TrendingDown size={14} /> Cheaper Alternatives Found
-                  </p>
-                  <div className="space-y-3">
-                    {compareData.cheaper_alternatives.map((alt, i) => (
-                        <div key={i} className="bg-white dark:bg-[#12101f]/70 border border-green-200 dark:border-green-800/30 rounded-xl p-4 hover:shadow-md transition-shadow">
-                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                          <div className="flex-1">
-                            <p className="font-semibold text-gray-900 dark:text-white/90 text-sm">{alt.product}</p>
-                            <p className="text-xs text-gray-500 dark:text-white/50 mt-1">{alt.description}</p>
+                  <details className="group bg-white dark:bg-[#12101f]/50 border border-gray-100 dark:border-white/10 rounded-xl overflow-hidden mt-2">
+                    <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-gray-700 dark:text-white/80 flex items-center justify-between">
+                      <span>All same product options ({sameProducts.length})</span>
+                      <ChevronDown size={16} className="transition-transform group-open:rotate-180 text-gray-400" />
+                    </summary>
+                    <div className="border-t border-gray-100 dark:border-white/10 divide-y divide-gray-50 dark:divide-white/5">
+                      {sameProducts.map((alt, i) => (
+                        <div key={i} className="px-4 py-3 flex items-center justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-800 dark:text-white/80 truncate">{alt.product}</p>
+                            {alt.link && (
+                              <a
+                                href={alt.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-0.5 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-500"
+                              >
+                                view <ExternalLink size={12} />
+                              </a>
+                            )}
                           </div>
                           <div className="text-right shrink-0">
-                            <p className="font-bold text-gray-900 dark:text-white">{alt.price}</p>
-                            <p className="text-xs font-semibold text-green-600 dark:text-green-400">{alt.savings}</p>
+                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{alt.price}</p>
+                            {alt.savings && (
+                              <p className="text-xs font-semibold text-green-600 dark:text-green-400">{alt.savings}</p>
+                            )}
                           </div>
                         </div>
-                        {alt.link && (
-                          <a
-                            href={alt.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 mt-2"
-                          >
-        View store <ExternalLink size={12} />
-                          </a>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  </details>
                 </div>
-              )}
-
-              {compareData.other_similar.length > 0 && (
-                <div>
-                  <p className="text-sm font-bold text-gray-600 dark:text-white/60 mb-3">Other Similar Products</p>
-                  <div className="space-y-2">
-                    {compareData.other_similar.map((sim, i) => (
-                      <div key={i} className="bg-white dark:bg-[#12101f]/50 border border-gray-100 dark:border-white/5 rounded-xl p-3 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                        <div className="flex-1">
-                          <p className="font-medium text-gray-800 dark:text-white/80 text-sm">{sim.product}</p>
-                          <p className="text-xs text-gray-400 dark:text-white/40 mt-0.5">{sim.description}</p>
-                        </div>
-                        <div className="text-right shrink-0">
-                          <p className="font-semibold text-gray-900 dark:text-white text-sm">{sim.price}</p>
-                          {sim.link && (
-                            <a
-                              href={sim.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-0.5 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-500"
-                            >
-                              view <ExternalLink size={12} />
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+              ) : (
+                <div className="bg-[#FBFAF6] dark:bg-[#12101f]/50 border border-[#16181F]/8 dark:border-white/10 rounded-xl p-4">
+                  <p className="text-sm font-medium text-gray-700 dark:text-white/80 leading-relaxed">
+                    No same product found across websites — the one you provided could not be matched.
+                  </p>
                 </div>
-              )}
-
-              {compareData.cheaper_alternatives.length === 0 && compareData.other_similar.length === 0 && !compareData.cheapest && (
-                <p className="text-sm text-gray-400 dark:text-white/40 text-center py-4">
-                  No alternatives found in scraped stores.
-                </p>
               )}
             </div>
           )}
