@@ -11,6 +11,7 @@ import Login from './pages/login';
 import Register from './pages/register';
 import AdminDashboard from './pages/admin-dashboard';
 import Purchase from './pages/purchase';
+import NotFound from './pages/not-found';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/purchase" element={<Purchase />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </AnimatePresence>
         <Footer />
