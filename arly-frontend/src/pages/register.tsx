@@ -91,8 +91,6 @@ export default function Register() {
               {touched.username && username && !usernameValid && (
                 <p className="mt-1 text-xs text-red-500 dark:text-red-400">Username must be at least 3 characters</p>
               )}
-                />
-              </div>
             </div>
 
             <div>
@@ -129,8 +127,6 @@ export default function Register() {
               {touched.email && email && !emailValid && (
                 <p className="mt-1 text-xs text-red-500 dark:text-red-400">Enter a valid email address</p>
               )}
-                />
-              </div>
             </div>
 
             <div>
@@ -166,8 +162,6 @@ export default function Register() {
               {touched.password && password && !passwordValid && (
                 <p className="mt-1 text-xs text-red-500 dark:text-red-400">Password must be at least 6 characters</p>
               )}
-                />
-              </div>
             </div>
 
             <button
