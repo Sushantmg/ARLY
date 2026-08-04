@@ -14,8 +14,6 @@ export interface UserProfile {
   username: string;
   email: string;
   role: string;
-  is_premium: boolean;
-  premium_until: string | null;
   created_at: string;
 }
 
@@ -46,8 +44,4 @@ export interface RegisterPayload {
   username: string;
   email: string;
   password: string;
-}
-
-export interface WebhookResponse {
-  profile: UserProfile;
 }
