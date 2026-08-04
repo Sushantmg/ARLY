@@ -107,3 +107,21 @@ export interface ProductLookupResponse {
   freshness_threshold_hours: number;
   error?: string;
 }
+
+// ── Scrape history (supabase scrape_history table) ──────────
+
+export interface ScrapeHistoryEntry {
+  id: string;
+  user_id: string;
+  url: string;
+  product_name: string | null;
+  brand: string | null;
+  category: string | null;
+  current_price: number | null;
+  source_site: string | null;
+  source_url: string | null;
+  image_url: string | null;
+  method: string | null;
+  result_data: Record<string, unknown> | null;
+  created_at: string;
+}
