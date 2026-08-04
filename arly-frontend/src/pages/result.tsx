@@ -5,6 +5,8 @@ import PageTransition from '../components/PageTransition';
 import StoreGrid from '../components/StoreGrid';
 import Skeleton from '../components/Skeleton';
 import type { BackendProduct, StoreResult, CompareResponse, ProductLookupResponse } from '../types/product';
+import { useAuth } from '../context/AuthContext';
+import { recordScrape } from '../lib/history';
 import { ExternalLink, TrendingDown, Package, Clock, CheckCircle, ChevronDown } from 'lucide-react';
 
 // olizstore.com flows through the generic extract+compare path (query_scrapper),
@@ -179,6 +181,7 @@ function MatchCard({ match }: { match: ProductLookupResponse['matches']['tier1']
 
 function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoading: (l: boolean) => void }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [product, setProduct] = useState<BackendProduct | null>(null);
   const [extractionMethod, setExtractionMethod] = useState<string>('');
   const [storeResults, setStoreResults] = useState<StoreResult[]>([]);
@@ -205,6 +208,19 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
           setProduct(data.product);
           setExtractionMethod(data.method || '');
           setStoreResults(data.store_results || []);
+
+          recordScrape(user?.id, {
+            url: targetUrl,
+            product_name: data.product.product_name,
+            brand: data.product.brand,
+            category: data.product.category,
+            current_price: data.product.current_price,
+            source_site: data.product.source_site,
+            source_url: data.product.source_url,
+            image_url: data.product.image_url,
+            method: data.method,
+            result_data: data,
+          });
 
           setCompareLoading(true);
           fetch('/compare-api/compare', {
@@ -235,7 +251,7 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
       });
 
     return () => { cancelled = true; };
-  }, [targetUrl, setIsLoading]);
+  }, [targetUrl, setIsLoading, user?.id]);
 
   const totalStoreItems = storeResults.reduce((sum, s) => sum + s.results.length, 0);
 
@@ -390,7 +406,7 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
                           </div>
                           <div className="text-right shrink-0">
                             <p className="text-sm font-semibold text-gray-900 dark:text-white">{alt.price}</p>
-                            {alt.savings && (
+                            {'savings' in alt && alt.savings && (
                               <p className="text-xs font-semibold text-green-600 dark:text-green-400">{alt.savings}</p>
                             )}
                           </div>
@@ -428,11 +444,12 @@ function LegacyResult({ targetUrl, setIsLoading }: { targetUrl: string; setIsLoa
 export default function Result({ setIsLoading }: ResultProps) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [catalogLookup, setCatalogLookup] = useState<ProductLookupResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>('');
-
+  const { user } = useAuth();
   const targetUrl = searchParams.get('url') || '';
+  const useCatalogFlow = isCatalogDomain(targetUrl);
+  const [catalogLookup, setCatalogLookup] = useState<ProductLookupResponse | null>(null);
+  const [loading, setLoading] = useState(useCatalogFlow);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     if (!targetUrl) {
@@ -440,13 +457,9 @@ export default function Result({ setIsLoading }: ResultProps) {
       return;
     }
 
-    if (!isCatalogDomain(targetUrl)) {
-      setLoading(false);
-      return;
-    }
+    if (!useCatalogFlow) return;
 
     let cancelled = false;
-    setLoading(true);
 
     fetch('/compare-api/product-lookup', {
       method: 'POST',
@@ -461,6 +474,19 @@ export default function Result({ setIsLoading }: ResultProps) {
         if (cancelled) return;
         if (data.success) {
           setCatalogLookup(data);
+
+          const product = data.product;
+          recordScrape(user?.id, {
+            url: targetUrl,
+            product_name: [product.brand, product.model].filter(Boolean).join(' ') || product.raw_title,
+            brand: product.brand,
+            category: product.category,
+            current_price: product.price_min,
+            source_site: product.source_site,
+            source_url: product.source_url,
+            image_url: product.image_url,
+            result_data: data,
+          });
         } else {
           setError(data.error || 'Product lookup failed');
         }
@@ -473,9 +499,7 @@ export default function Result({ setIsLoading }: ResultProps) {
       });
 
     return () => { cancelled = true; };
-  }, [targetUrl, navigate]);
-
-  const useCatalogFlow = isCatalogDomain(targetUrl);
+  }, [targetUrl, navigate, useCatalogFlow, user?.id]);
 
   if (useCatalogFlow && catalogLookup) {
     return (
