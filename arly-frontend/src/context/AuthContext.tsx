@@ -9,7 +9,6 @@ interface AuthContextType {
   login: (payload: LoginPayload) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
   logout: () => void;
-  upgradePremium: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -99,20 +98,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
-  const upgradePremium = useCallback(async () => {
-    if (!user) throw new Error("Not authenticated");
-    const res = await fetch("/api/purchase/webhook-mock", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: user.id }),
-    });
-    if (!res.ok) throw new Error("Upgrade failed");
-    const updated = await fetchProfile(user.id);
-    setUser(updated);
-  }, [user]);
-
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout, upgradePremium }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
