@@ -9,7 +9,7 @@ The project is a multi-service system with three independent services:
 | Service | Stack | Port | Purpose |
 |---|---|---|---|
 | Frontend | React 19 + Vite + Tailwind CSS v4 | 5173 | User interface and auth UI |
-| Backend (Auth + API) | Next.js (App Router) + Supabase | 3000 | Authentication, user profiles, premium webhook |
+| Backend (Auth + API) | Next.js (App Router) + Supabase | 3000 | Authentication and user profiles |
 | Query Scraper | Express.js + LLM pipeline | 3002 | Product data extraction via URL |
 | Product Scraper | Express.js + LLM pipeline | 3001 | Multi-site price comparison and ranking |
 
@@ -18,23 +18,25 @@ The project is a multi-service system with three independent services:
 ### Visual Design & Layout
 - **Sticky Navbar**: Glassmorphic navigation bar with custom ARLY branding, theme toggle (dark/light), and auth-aware profile dropdown
 - **URL Input Hub**: Centered landing page where users paste a product URL with instant format validation
-- **Modular Pages**: Home, About, Result, Login, Register, Admin Dashboard, Purchase — each in its own component
+- **Modular Pages**: Home, About, Result, Login, Register, Admin Dashboard, History — each in its own component
 - **Product Result Cards**: High-contrast cards displaying extracted pricing, marketplace names, stock badges, and comparison links
 
 ### Authentication System
 - **Email/Password Login & Registration**: Full forms wired to Supabase backend endpoints
 - **Google OAuth**: One-click sign-in via Supabase's built-in Google provider
 - **Session Management**: Automatic session restoration on page refresh via `supabase.auth.getSession()`
-- **Profile Dropdown**: Displays username, email, role badge, premium tier, and dynamic days-left countdown
+- **Profile Dropdown**: Displays username, email, and role badge
 
-### Premium Upgrade Gateway
-- **Diamond VIP Checkout Page**: Branded upgrade page with benefit list and one-click purchase
-- **Backend Integration**: Calls `POST /api/purchase/webhook-mock` which uses Supabase service role to grant 30-day premium access
+### Scrape History
+- **Automatic Recording**: Every successful scrape (catalog lookup or URL extraction) is saved to the user's Supabase `scrape_history` table
+- **History Page**: Lists past scrapes newest-first with product thumbnail, brand, price, source, and timestamp
+- **Actions**: Re-scrape any past entry or open its source page, plus per-entry delete
+- **Privacy**: Row Level Security scopes history to the owning user only
 
 ### Admin Dashboard
 - **Role-Gated Access**: Only users with `role: "admin"` in the profiles table can view
 - **403 Fallback**: Clean "Access Denied" layout for unauthorized users
-- **Metrics Grid**: Responsive cards showing Total Users, Active Subscriptions, Revenue, and Scrapes
+- **Metrics Grid**: Responsive cards showing dashboard metrics
 
 ## Frontend Routes
 
@@ -46,14 +48,13 @@ The project is a multi-service system with three independent services:
 | `/login` | Email/password + Google OAuth | Public |
 | `/register` | User registration | Public |
 | `/admin/dashboard` | Admin analytics dashboard | Admin only |
-| `/purchase` | Diamond VIP upgrade | Authenticated |
+| `/history` | Per-user scrape history | Authenticated |
 
 ## API Proxy Rules (Vite Dev Server)
 
 | Frontend Path | Target | Port |
 |---|---|---|
 | `/api/auth/*` | Next.js backend | 3000 |
-| `/api/purchase/*` | Next.js backend | 3000 |
 | `/api/*` | Query Scraper | 3002 |
 | `/compare-api/*` | Product Scraper | 3001 |
 
@@ -63,7 +64,6 @@ The project is a multi-service system with three independent services:
 |---|---|---|---|
 | POST | `/api/auth/login` | Next.js | Email/password login via Supabase |
 | POST | `/api/auth/register` | Next.js | User registration via Supabase |
-| POST | `/api/purchase/webhook-mock` | Next.js | Grant 30-day premium (service role) |
 | POST | `/` | Query Scraper | Extract product data from URL |
 | POST | `/compare` | Product Scraper | Compare prices across retailers |
 
