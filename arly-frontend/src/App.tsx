@@ -10,7 +10,7 @@ import Result from './pages/result';
 import Login from './pages/login';
 import Register from './pages/register';
 import AdminDashboard from './pages/admin-dashboard';
-import Purchase from './pages/purchase';
+import HistoryPage from './pages/history';
 import NotFound from './pages/not-found';
 
 export default function App() {
@@ -37,7 +37,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/purchase" element={<Purchase />} />
+            <Route path="/history" element={<HistoryPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AnimatePresence>
