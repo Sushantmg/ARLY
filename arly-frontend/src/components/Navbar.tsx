@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Sun, Moon, LogIn, LogOut, Shield, ChevronDown, Gem, Menu, X } from "lucide-react";
+import { Sun, Moon, LogIn, LogOut, Shield, ChevronDown, Menu, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 interface NavbarProps {
@@ -18,6 +18,7 @@ export default function Navbar({ isDark, setIsDark }: NavbarProps) {
   const navItems = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
+    ...(user ? [{ name: "History", path: "/history" }] : []),
   ];
 
   useEffect(() => {
@@ -37,15 +38,6 @@ export default function Navbar({ isDark, setIsDark }: NavbarProps) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  const premiumUntil = user?.premium_until;
-  const premiumDaysLeft = useMemo(() => {
-    if (!premiumUntil) return 0;
-    const now = new Date();
-    const until = new Date(premiumUntil);
-    const diff = until.getTime() - now.getTime();
-    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-  }, [premiumUntil]);
 
   const userInitial = user?.username?.charAt(0).toUpperCase() ?? "?";
 
@@ -161,39 +153,9 @@ export default function Navbar({ isDark, setIsDark }: NavbarProps) {
                           {user.role}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-gray-400 dark:text-white/40">Tier</span>
-                        {user.is_premium ? (
-                          <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                            <Gem size={10} />
-                            Diamond VIP
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-white/40">
-                            Free Tier
-                          </span>
-                        )}
-                      </div>
-                      {user.is_premium && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-medium text-gray-400 dark:text-white/40">Days Left</span>
-                          <span className="text-xs font-bold text-gray-700 dark:text-white/70">
-                            {premiumDaysLeft} days
-                          </span>
-                        </div>
-                      )}
                     </div>
 
                     <div className="px-3 py-2">
-                      {user.is_premium === false && (
-                        <Link
-                          to="/purchase"
-                          className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-500/10 transition-colors"
-                        >
-                          <Gem size={15} />
-                          Upgrade to VIP
-                        </Link>
-                      )}
                       {user.role === "admin" && (
                         <Link
                           to="/admin/dashboard"
@@ -275,16 +237,6 @@ export default function Navbar({ isDark, setIsDark }: NavbarProps) {
                     <p className="text-sm font-bold text-gray-900 dark:text-white">{user.username}</p>
                     <p className="text-xs text-gray-500 dark:text-white/40">{user.email}</p>
                   </div>
-                  {user.is_premium === false && (
-                    <Link
-                      to="/purchase"
-                      onClick={() => setMobileOpen(false)}
-                      className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-500/10 transition-colors"
-                    >
-                      <Gem size={15} />
-                      Upgrade to VIP
-                    </Link>
-                  )}
                   {user.role === "admin" && (
                     <Link
                       to="/admin/dashboard"
