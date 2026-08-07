@@ -1,10 +1,11 @@
 import { motion, type Variants } from 'framer-motion';
-import { Link2, Globe, Cpu, Clock } from 'lucide-react';
+import { Link2, Globe, Cpu, Clock, FileText } from 'lucide-react';
 
 const stats = [
   { icon: Link2, value: '1', label: 'Link is all you paste' },
-  { icon: Globe, value: '10+', label: 'Nepali retailers cross-checked' },
+  { icon: Globe, value: '4', label: 'Nepali retailers cross-checked' },
   { icon: Cpu, value: '2', label: 'LLM passes — extract, then summarize' },
+  { icon: FileText, value: 'LLM', label: 'Summarization of product info' },
   { icon: Clock, value: '~20s', label: 'Typical time to full comparison' },
 ];
 
@@ -25,7 +26,7 @@ export default function StatsStrip() {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.4 }}
-      className="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 px-4"
+      className="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 sm:gap-6 px-4"
     >
       {stats.map(({ icon: Icon, value, label }) => (
         <motion.div
