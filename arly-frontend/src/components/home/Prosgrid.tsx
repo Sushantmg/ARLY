@@ -4,7 +4,7 @@ import { Clock, Eye, Globe, Layers, MousePointer, MapPin } from 'lucide-react';
 const pros = [
   { icon: Clock, title: 'Minutes saved', detail: 'No more opening ten tabs by hand — one paste replaces the whole routine.' },
   { icon: Eye, title: 'Real price transparency', detail: 'See what the same product actually costs across the market, side by side.' },
-  { icon: Globe, title: 'Wide local coverage', detail: 'Checks 10+ Nepali retail sites in one pass, not just one or two.' },
+  { icon: Globe, title: 'Local coverage', detail: 'Checks 4 Nepali retail sites in one pass, not just one or two.' },
   { icon: Layers, title: 'Clean, structured data', detail: 'An LLM turns messy listings into one consistent, comparable format.' },
   { icon: MousePointer, title: 'One-paste simplicity', detail: 'No forms, filters, or manual search terms — just the link you already have.' },
   { icon: MapPin, title: 'Built for Nepal', detail: 'Tuned to how local retailers list, name, and price their products.' },

@@ -10,7 +10,7 @@ const problems = [
 const fixes = [
   'One link in, and ARLY reads the product for you',
   'An LLM normalizes the mess into one clean, comparable record',
-  'That record is matched across 10+ local stores automatically',
+  'That record is matched across 4 local stores automatically',
 ];
 
 const fadeUp: Variants = {

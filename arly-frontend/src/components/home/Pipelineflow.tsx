@@ -20,7 +20,7 @@ const steps = [
   {
     icon: Share2,
     title: 'Fan-out search',
-    detail: 'That clean name is queried across 10+ other local stores.',
+    detail: 'That clean name is queried across 4 other local stores.',
   },
   {
     icon: FileText,

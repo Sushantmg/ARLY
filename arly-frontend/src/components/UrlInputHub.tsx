@@ -40,7 +40,7 @@ export default function UrlInputHub({ onUrlSubmit, isLoading }: UrlInputHubProps
       </h1>
       <p className="text-lg text-[#5B6270] dark:text-white/60 font-medium mb-8 max-w-lg mx-auto">
         Drop in one Nepali product link. ARLY reads it, then checks it against
-        10+ other local retailers so you don't have to.
+        4 other local retailers so you don't have to.
       </p>
 
       <form
