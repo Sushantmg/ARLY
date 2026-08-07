@@ -4,7 +4,6 @@ import UrlInputHub from '../components/UrlInputHub';
 import StatsStrip from '../components/home/Statsstrip';
 import ProblemSolution from '../components/home/Problemsolution';
 import PipelineFlow from '../components/home/Pipelineflow';
-import ProjectStructure from '../components/home/Projectstructure';
 import ProsGrid from '../components/home/Prosgrid';
 
 
@@ -69,7 +68,6 @@ export default function Home({ isLoading, setIsLoading }: HomeProps) {
       <div className="relative flex flex-col gap-24 pb-24">
         <ProblemSolution />
         <PipelineFlow />
-        <ProjectStructure />
         <ProsGrid />
       </div>
     </div>
