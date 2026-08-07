@@ -4,6 +4,21 @@
   @tailwind utilities;
 @custom-variant dark (&:where(.dark, .dark *));
 
+@keyframes flow-x {
+  from { left: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  to { left: 100%; opacity: 0; }
+}
+@keyframes flow-y {
+  from { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  to { top: 100%; opacity: 0; }
+}
+.flow-dot { animation: flow-x 1.2s linear infinite; }
+.flow-dot-v { animation: flow-y 1.2s linear infinite; }
+
 :root {
   font-family: Inter, system-ui, sans-serif;
 }

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Link2, Scale, History as HistoryIcon, ShieldCheck, Search, Database, Store, Globe, Cpu, ArrowRight, Sparkles } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
+import WorkflowSimulation from '../components/WorkflowSimulation';
 
 const features = [
   {
@@ -76,6 +77,7 @@ function SectionHeader({ kicker, title }: { kicker: string; title: string }) {
 export default function About() {
   return (
     <PageTransition>
+      <WorkflowSimulation />
       <div className="max-w-5xl mx-auto pt-12 pb-6 px-4">
         {/* Intro */}
         <div className="bg-white/60 dark:bg-[#12101f]/70 border border-[#16181F]/8 dark:border-white/10 rounded-2xl shadow-xl p-8 sm:p-12">
