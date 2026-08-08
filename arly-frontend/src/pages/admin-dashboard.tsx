@@ -16,7 +16,6 @@ interface AdminStats {
     current_price: number | null;
     created_at: string;
   }[];
-  scrapesPerDay: { date: string; count: number }[];
 }
 
 interface MetricCard {
@@ -150,39 +149,6 @@ export default function AdminDashboard() {
       )}
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white dark:bg-[#12101f]/70 border border-gray-100 dark:border-white/10 rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
-            <BarChart3 size={18} className="text-violet-500" />
-            <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
-              Scrapes — Last 7 Days
-            </h2>
-          </div>
-          {!stats ? (
-            <div className="h-48 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center">
-              <Loader2 size={20} className="animate-spin text-violet-500" />
-            </div>
-          ) : (
-            <div className="flex items-end gap-2 h-48 px-1">
-              {stats.scrapesPerDay.map((d) => {
-                const max = Math.max(1, ...stats.scrapesPerDay.map((x) => x.count));
-                const height = Math.max(4, (d.count / max) * 100);
-                return (
-                  <div key={d.date} className="flex-1 flex flex-col items-center gap-1 min-w-0">
-                    <span className="text-xs font-semibold text-gray-500 dark:text-white/50">{d.count}</span>
-                    <div
-                      className="w-full rounded-lg bg-gradient-to-t from-violet-600 to-blue-500 transition-all"
-                      style={{ height: `${height}%` }}
-                    />
-                    <span className="text-[10px] text-gray-400 dark:text-white/30 truncate w-full text-center">
-                      {new Date(d.date).toLocaleDateString(undefined, { weekday: 'short' })}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
         <div className="bg-white dark:bg-[#12101f]/70 border border-gray-100 dark:border-white/10 rounded-2xl p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <Activity size={18} className="text-violet-500" />
