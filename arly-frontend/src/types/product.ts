@@ -13,37 +13,9 @@ export interface BackendProduct {
   image_url: string;
 }
 
-/** Single item from a store scraper */
-export interface StoreItem {
-  title: string;
-  price: string;
-  description: string;
-  link: string;
-}
-
-/** Results from one store in store_results[] */
-export interface StoreResult {
-  site: string;
-  results: StoreItem[];
-}
-
 /** Full POST / response from query_scrapper */
+
 // ── Compare types (from /compare-api/compare) ──────────────
-
-export interface CheaperAlternative {
-  product: string;
-  description: string;
-  price: string;
-  savings: string;
-  link: string;
-}
-
-export interface SimilarProduct {
-  product: string;
-  description: string;
-  price: string;
-  link: string;
-}
 
 export interface CompareResponse {
   query: string;
@@ -55,12 +27,7 @@ export interface CompareResponse {
   };
   scraped_at: string;
   total_products: number;
-  most_relevant: string | null;
-  cheapest: string | null;
-  cheaper_alternatives: CheaperAlternative[];
-  same_products?: { product: string; price: string; link?: string; site?: string }[];
-  other_similar: SimilarProduct[];
-  interpretation: string | null;
+  same_products?: { title: string; price: string; link?: string; site?: string }[];
 }
 
 // ── Catalog product lookup (from /compare-api/product-lookup) ──────
