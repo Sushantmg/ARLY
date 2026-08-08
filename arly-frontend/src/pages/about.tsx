@@ -40,7 +40,6 @@ const steps = [
   { num: '01', title: 'Paste a link', desc: 'One URL is all you need — validation happens instantly on the landing page.' },
   { num: '02', title: 'Extract the product', desc: 'JSON-LD → Open Graph → DOM → LLM fallback reconstructs name, price, specs, and image.' },
   { num: '03', title: 'Compare across stores', desc: 'LLM-built queries search BrotherMart, OlizStore, GBN Store, and Daraz; results are normalized and ranked.' },
-  { num: '04', title: 'Get the verdict', desc: 'A plain-language AI summary tells you the cheapest option and why — then it lands in your history.' },
 ];
 
 const stack = [

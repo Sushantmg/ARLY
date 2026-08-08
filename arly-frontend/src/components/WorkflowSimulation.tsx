@@ -20,8 +20,8 @@ const LOG_LINES = [
   '  → olizstore.com ✓ (18)',
   '  → brothermart.com ✓ (12)',
   '  → gbnstore.com.np ✓ (9)',
-  'llm · rank 4 stores → cheapest + alternatives',
-  '→ 200 OK · verdict rendered',
+  'llm · filter + sort 4 stores → cheapest + alternatives',
+  '→ 200 OK · results rendered',
 ];
 
 const METHODS = ['json-ld', 'og-meta', 'dom-fallback', 'llm'];
@@ -233,7 +233,7 @@ export default function WorkflowSimulation() {
             </div>
           </FlowBlock>
           <FlowConnector active={stage >= 12} />
-          <FlowBlock icon={Sparkles} label="LLM Verdict" port="rank + alternatives" state={st(12, 12)} />
+          <FlowBlock icon={Sparkles} label="Product Filtering & Sorting" port="cheapest + alternatives" state={st(12, 12)} />
         </div>
 
         <div className="mt-6 flex items-center justify-between rounded-xl border border-[#16181F]/10 dark:border-white/10 bg-[#0A0C10] dark:bg-black/60 px-4 py-3">
