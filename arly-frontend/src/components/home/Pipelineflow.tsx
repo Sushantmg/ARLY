@@ -18,14 +18,14 @@ const steps = [
     detail: 'An LLM turns the mess into a clean name, price, and spec sheet.',
   },
   {
-    icon: Share2,
-    title: 'Fan-out search',
-    detail: 'That clean name is queried across 4 other local stores.',
-  },
-  {
     icon: FileText,
     title: 'LLM summary',
     detail: 'Results are ranked and summarized so you can decide at a glance.',
+  },
+  {
+    icon: Share2,
+    title: 'Fan-out search',
+    detail: 'That clean name is queried across 4 other local stores.',
   },
 ];
 
