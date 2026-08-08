@@ -1,12 +1,12 @@
 import { motion, type Variants } from 'framer-motion';
-import { Link2, Globe, Cpu, Clock, FileText } from 'lucide-react';
+import { Clock, Cpu, FileText, Globe, Link2 } from 'lucide-react';
 
 const stats = [
   { icon: Link2, value: '1', label: 'Link is all you paste' },
   { icon: Globe, value: '4', label: 'Nepali retailers cross-checked' },
   { icon: Cpu, value: '2', label: 'LLM passes — extract, then summarize' },
   { icon: FileText, value: 'LLM', label: 'Summarization of product info' },
-  { icon: Clock, value: '~20s', label: 'Typical time to full comparison' },
+  { icon: Clock, value: '~10s', label: 'Typical time to full comparison' },
 ];
 
 const container: Variants = {
