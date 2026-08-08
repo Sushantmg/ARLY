@@ -1,29 +1,68 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ShieldAlert, Users, CreditCard, TrendingUp, Activity, BarChart3, ArrowLeft, Loader2 } from "lucide-react";
+import { ShieldAlert, Users, Activity, BarChart3, ArrowLeft, Loader2, ExternalLink } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { supabase } from "../lib/supabase";
+
+interface AdminStats {
+  totalUsers: number;
+  scrapesToday: number;
+  totalScrapes: number;
+  recentScrapes: {
+    id: string;
+    url: string;
+    product_name: string | null;
+    source_site: string | null;
+    current_price: number | null;
+    created_at: string;
+  }[];
+}
 
 interface MetricCard {
   label: string;
   value: string;
-  change: string;
-  positive: boolean;
   icon: React.ReactNode;
 }
 
-const MOCK_METRICS: MetricCard[] = [
-  { label: "Total Users", value: "12,847", change: "+14.2%", positive: true, icon: <Users size={20} /> },
-  { label: "Active Subscriptions", value: "3,291", change: "+8.7%", positive: true, icon: <CreditCard size={20} /> },
-  { label: "Monthly Revenue", value: "$48,520", change: "+22.4%", positive: true, icon: <TrendingUp size={20} /> },
-  { label: "Scrapes Today", value: "1,483", change: "-3.1%", positive: false, icon: <Activity size={20} /> },
-];
-
 export default function AdminDashboard() {
   const { user, isLoading: authLoading } = useAuth();
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [statsError, setStatsError] = useState("");
   const accessDenied = useMemo(
     () => !authLoading && (!user || user.role !== "admin"),
     [user, authLoading]
   );
+
+  useEffect(() => {
+    if (accessDenied) return;
+    let cancelled = false;
+
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+
+      const res = await fetch("/api/auth/admin/stats", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (!res.ok) {
+        throw new Error(`Failed to load stats (${res.status})`);
+      }
+      const data = await res.json();
+      if (!cancelled) setStats(data);
+    })().catch((err) => {
+      if (!cancelled) setStatsError(err instanceof Error ? err.message : "Failed to load stats");
+    });
+
+    return () => { cancelled = true; };
+  }, [accessDenied]);
+
+  const metrics: MetricCard[] = stats
+    ? [
+        { label: "Total Users", value: stats.totalUsers.toLocaleString(), icon: <Users size={20} /> },
+        { label: "Scrapes Today", value: stats.scrapesToday.toLocaleString(), icon: <Activity size={20} /> },
+        { label: "Total Scrapes", value: stats.totalScrapes.toLocaleString(), icon: <BarChart3 size={20} /> },
+      ]
+    : [];
 
   if (authLoading) {
     return (
@@ -70,52 +109,46 @@ export default function AdminDashboard() {
           Dashboard
         </h1>
         <p className="text-sm text-gray-500 dark:text-white/50 mt-1">
-          Overview of your application metrics and performance.
+          Real-time overview of users and scrapes.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {MOCK_METRICS.map((metric) => (
-          <div
-            key={metric.label}
-            className="bg-white dark:bg-[#12101f]/70 border border-gray-100 dark:border-white/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400">
-                {metric.icon}
+      {statsError && (
+        <div className="mb-4 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 text-red-600 dark:text-red-400 text-sm p-4">
+          {statsError}
+        </div>
+      )}
+
+      {!stats && !statsError && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="animate-pulse bg-white/60 dark:bg-[#12101f]/50 border border-gray-100 dark:border-white/10 rounded-2xl p-6 h-32" />
+          ))}
+        </div>
+      )}
+
+      {metrics.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {metrics.map((metric) => (
+            <div
+              key={metric.label}
+              className="bg-white dark:bg-[#12101f]/70 border border-gray-100 dark:border-white/10 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400">
+                  {metric.icon}
+                </div>
               </div>
-              <span
-                className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                  metric.positive
-                    ? "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400"
-                    : "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
-                }`}
-              >
-                {metric.change}
-              </span>
+              <p className="text-sm font-medium text-gray-500 dark:text-white/50">{metric.label}</p>
+              <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mt-1">
+                {metric.value}
+              </p>
             </div>
-            <p className="text-sm font-medium text-gray-500 dark:text-white/50">{metric.label}</p>
-            <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mt-1">
-              {metric.value}
-            </p>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white dark:bg-[#12101f]/70 border border-gray-100 dark:border-white/10 rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
-            <BarChart3 size={18} className="text-violet-500" />
-            <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
-              Revenue Trend
-            </h2>
-          </div>
-          <div className="h-48 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center">
-            <span className="text-xs font-medium text-gray-400 dark:text-white/30">
-              Revenue chart placeholder
-            </span>
-          </div>
-        </div>
         <div className="bg-white dark:bg-[#12101f]/70 border border-gray-100 dark:border-white/10 rounded-2xl p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <Activity size={18} className="text-violet-500" />
@@ -123,11 +156,43 @@ export default function AdminDashboard() {
               User Activity
             </h2>
           </div>
-          <div className="h-48 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center">
-            <span className="text-xs font-medium text-gray-400 dark:text-white/30">
-              Activity chart placeholder
-            </span>
-          </div>
+          {!stats ? (
+            <div className="h-48 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center">
+              <Loader2 size={20} className="animate-spin text-violet-500" />
+            </div>
+          ) : stats.recentScrapes.length === 0 ? (
+            <div className="h-48 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center">
+              <span className="text-xs font-medium text-gray-400 dark:text-white/30">
+                No scrapes yet
+              </span>
+            </div>
+          ) : (
+            <ul className="space-y-3 max-h-96 overflow-y-auto pr-1">
+              {stats.recentScrapes.map((s) => (
+                <li key={s.id} className="flex items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                      {s.product_name || "Untitled product"}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-white/50">
+                      {s.source_site || "Unknown source"}
+                      {s.current_price != null && ` · Rs. ${Number(s.current_price).toLocaleString()}`}
+                      {" · "}
+                      {new Date(s.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                  <a
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 dark:text-white/50 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"
+                  >
+                    <ExternalLink size={15} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>
