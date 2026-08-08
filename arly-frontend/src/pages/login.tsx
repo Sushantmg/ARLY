@@ -50,7 +50,7 @@ export default function Login() {
 
           <button
             type="button"
-            onClick={() => supabase.auth.signInWithOAuth({ provider: "google" })}
+            onClick={() => supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } })}
             className="w-full flex items-center justify-center gap-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-3 text-sm font-semibold text-gray-700 dark:text-white/80 hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
