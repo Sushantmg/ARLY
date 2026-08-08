@@ -1,10 +1,9 @@
-import { useNavigate } from 'react-router-dom';
 import { motion, type Variants } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import UrlInputHub from '../components/UrlInputHub';
-import StatsStrip from '../components/home/Statsstrip';
-import ProblemSolution from '../components/home/Problemsolution';
 import PipelineFlow from '../components/home/Pipelineflow';
-import ProsGrid from '../components/home/Prosgrid';
+import ProblemSolution from '../components/home/Problemsolution';
+import StatsStrip from '../components/home/Statsstrip';
 
 
 interface HomeProps {
@@ -68,7 +67,6 @@ export default function Home({ isLoading, setIsLoading }: HomeProps) {
       <div className="relative flex flex-col gap-24 pb-24">
         <ProblemSolution />
         <PipelineFlow />
-        <ProsGrid />
       </div>
     </div>
   );
